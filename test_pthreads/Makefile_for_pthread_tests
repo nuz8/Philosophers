@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/02/15 01:44:47 by pamatya          ###   ########.fr        #
+#    Updated: 2025/02/11 13:19:15 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,8 @@ D_LIB		=	lib
 D_OBJ		=	obj
 
 D_SRC		=	src
-D_TEST		=	test_src
+D_TEST		=	src_test
+D_PTHREADS	=	$(D_TEST)/src_test_pthreads
 
 # ----------------- Docker files ----------------- #
 
@@ -45,19 +46,20 @@ IMAGE_NAME = valgrind
 
 # ----------------- Source, Object and Dependency files ----------------- #
 
-SRC_MAIN	=	main.c errors.c init_df.c string_utils.c parser.c
-SRC_TEST	=	test_prints.c
+SRC_MAIN	=	test_main.c routines.c \
+				test_first_threads.c test_mutex.c test_mutex_loop.c \
+				test_thread_return.c test_print_primes.c test_sum_primes.c \
+				test_trylock.c
 
 # VPATH		+=	$(D_PTHREADS) $(D_SRC)
-VPATH		+=	$(D_SRC) $(D_TEST)
+VPATH		+=	$(D_SRC) $(D_PTHREADS)
 
-SRC			=	$(SRC_MAIN) $(SRC_TEST)
+SRC			=	$(SRC_MAIN)
 OBJ 		+= 	$(addprefix $(D_OBJ)/, $(SRC:.c=.o))
 DEP			= 	$(OBJ:.o=.d)
 
 # ----------------- Target Binary ----------------- #
-NAME		=	philo
-ARGS		=	5 200 200 200
+NAME		=	test
 
 # ----------------- Headers Flag ----------------- #
 HEADS_FLG	=	-I$(D_INC)
@@ -68,8 +70,8 @@ LIBS_FLG		=	$(LIBFT_FLG) $(READLINE_FLG)
 
 # LIBFT
 LIBFT			=	libft.a
-LIBFT_DIR		=	$(D_LIB)
-LIBFT_HED		=	$(D_LIB)/includes
+LIBFT_DIR		=	$(D_LIB)															# library file directory
+LIBFT_HED		=	$(D_LIB)/includes													# header directory
 LIBFT_FLG		=	-L$(LIBFT_DIR) -l$(basename $(subst lib,,$(LIBFT)))
 
 # ----------------- Valgrind ----------------- #
@@ -125,7 +127,10 @@ fclean:
 re: fclean all
 
 valgrind: $(NAME)
-	@valgrind $(VALGRIND_OPTS) ./$(NAME) $(ARGS)
+	@valgrind $(VALGRIND_OPTS) ./$(NAME)
+
+valgrind_n: $(NAME)
+	@env -i valgrind $(VALGRIND_OPTS) ./$(NAME)
 
 format:
 	@c_formatter_42 main.c $(D_PTHREADS)/*.c $(D_SRC)/*.c $(D_INC)/*.h
