@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 00:56:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/02/15 01:36:05 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/15 15:59:09 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ int	set_parameters(int ac, char **av, t_df *df)
 				return (printf("Invalid character in arg[%d]\n", i), 1);
 		}
 	}
-	df->num_philos = ft_atol(av[1]);
+	df->total_philos = ft_atol(av[1]);
 	df->ttd = ft_atol(av[2]);
 	df->tte = ft_atol(av[3]);
 	df->tts = ft_atol(av[4]);
 	if (ac == 6)
-		df->max_eats = ft_atol(av[5]);
+		df->max_meals = ft_atol(av[5]);
 	return (0);
 }
 

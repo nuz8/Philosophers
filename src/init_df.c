@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/02/16 12:04:08 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/15 15:59:59 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,16 @@ t_df	*get_df(void)
 	return (df);
 }
 
+// // Potential simplification for get_df()
+// t_df	*get_df(void)
+// {
+// 	static t_df	*df = NULL;
+
+// 	if (!df)
+// 		df = malloc(sizeof(t_df));
+// 	return (df);
+// }
+
 int	init_struct(int ac, char **av)
 {
 	t_df	*df;
@@ -42,6 +52,8 @@ int	init_struct(int ac, char **av)
 
 	return (0);
 }
+
+
 
 // int	init_philosphers(t_df *df)
 // {
