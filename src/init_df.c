@@ -6,14 +6,14 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/15 15:59:59 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/15 18:27:32 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
 t_df	*get_df(void);
-int		init_struct(int ac, char **av);
+int		init_df(int ac, char **av, t_df *df);
 
 // Function to get the pointer to the dataframe struct (t_df *)
 t_df	*get_df(void)
@@ -39,21 +39,16 @@ t_df	*get_df(void)
 // 	return (df);
 // }
 
-int	init_struct(int ac, char **av)
+int	init_df(int ac, char **av, t_df *df)
 {
-	t_df	*df;
 	int		ret;
 
-	(void)ac;
-	df = get_df();
-	ret = set_parameters(ac, av, df);
+	ret = import_parameters(ac, av, df);
 	if (ret != 0)
 		return (ret);
 
 	return (0);
 }
-
-
 
 // int	init_philosphers(t_df *df)
 // {

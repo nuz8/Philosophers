@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/15 16:04:27 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/15 18:28:17 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,21 @@
 ASCII escapte sequences for setting text colour (BOLD)
 RST is to reset the colour after changing it...should be used everytime
 */
-# define BB		"\033[1;30m" // Bold Black
-# define R		"\033[1;31m" // Bold Red
-# define G		"\033[1;32m" // Bold Green
-# define B		"\033[1;34m" // Bold Blue
-# define Y		"\033[1;33m" // Bold Yellow
-# define M		"\033[1;35m" // Bold Magenta
-# define C		"\033[1;36m" // Bold Cyan
-# define W		"\033[1;37m" // Bold White
-# define RST		"\033[0m" 	// Reset to default
+# define BB		"\033[1;30m"	// Bold Black
+# define R		"\033[1;31m"	// Bold Red
+# define G		"\033[1;32m"	// Bold Green
+# define B		"\033[1;34m"	// Bold Blue
+# define Y		"\033[1;33m"	// Bold Yellow
+# define M		"\033[1;35m"	// Bold Magenta
+# define C		"\033[1;36m"	// Bold Cyan
+# define W		"\033[1;37m"	// Bold White
+# define RST	"\033[0m"		// Reset to default
 
 // Error messages
-# define ERM_MALLOC "Malloc failed"
+# define ERR_MALLOC		"Malloc failed\n"
+# define ERR_INVALID	"Input has invalid characters\n"
+# define ERR_NEGATIVE	"Input is negative, enter only positive numbers\n"
+# define ERR_TOOLONG	"Input is bigger than INT type, limit is 2147483647\n"
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -103,7 +106,7 @@ void	print_errstr(char *str);
 /* -------------------------------- init_df.c -------------------------------- */
 
 t_df	*get_df(void);
-int		init_struct(int ac, char **av);
+int		init_df(int ac, char **av, t_df *df);
 
 /* ----------------------------- string_utils.c ----------------------------- */
 
@@ -114,9 +117,7 @@ char	*concat_strings(const char *str[]);
 
 /* ----------------------------- parser.c ----------------------------- */
 
-int		set_parameters(int ac, char **av, t_df *df);
-int		ft_isdigit(unsigned int c);
-long	ft_atol(const char *str);
+int	import_parameters(int ac, char **av, t_df *df);
 
 /* ============================= test functions ============================= */
 
