@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/15 18:29:29 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/17 00:21:17 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,24 @@
 
 int	main(int ac, char **av)
 {
-	int		ret;
 	t_df	*df;
 
+	df = NULL;
 	if (!(ac == 5 || ac == 6))
-		return (arg_error());
+	{
+		if (arg_error() < 0)
+			return (-1);
+		return (1);
+	}
 	df = get_df();
 	if (!df)
 		return (print_errstr(ERR_MALLOC), -1);
-	ret = init_df(ac, av, df);
-	if (ret != 0)
-		return (ret);
-	
+	if (init_df(ac, av) != 0)
+		return (clear_out(df, 0), 2);
 
 	test_print_elements();
 	// test_print_time();
-	free(df);
+
+	clear_out(df, 0);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/15 18:28:17 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/17 01:21:58 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,14 @@ RST is to reset the colour after changing it...should be used everytime
 # define RST	"\033[0m"		// Reset to default
 
 // Error messages
-# define ERR_MALLOC		"Malloc failed\n"
-# define ERR_INVALID	"Input has invalid characters\n"
-# define ERR_NEGATIVE	"Input is negative, enter only positive numbers\n"
-# define ERR_TOOLONG	"Input is bigger than INT type, limit is 2147483647\n"
+# define ERR_MALLOC		R"Error: "Y"malloc failed\n"RST
+# define ERR_INVALID	R"Error: "Y"invalid characters\n"RST
+# define ERR_NEGATIVE	R"Error: "Y"input is negative\n"RST
+# define ERR_TOOLONG	R"Error: "Y"input too large, limit is 2147483647\n"RST
+# define ERR_TOOSMALL	R"Error: "Y"time too small, should be >= 60\n"RST
+
+# define ERR_STH		R"Error: "Y"SOME ERROR THAT NEEDS ADDRESSING\n"RST
+
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -68,6 +72,7 @@ typedef struct	s_fork
 {
 	int		id;			// starts at 0
 	t_mutex	mtx;		// pointer to the fork mutex
+	bool	mtx_initialized;	// flag for initialization status of the mutex mtx
 	int		state;		// states: TAKEN / FREE ; from ef_states enums
 	int		with_left;	// flag, init to 0, 1 when state is TAKEN by philo to its left
 	int		with_right;	// flag, init to 0, 1 when state is TAKEN by philo to its right
@@ -78,7 +83,8 @@ typedef struct	s_phil
 {
 	int			id;			// philosopher id number
 	pthread_t	th_id;		// thread id number
-	t_mutex		mtx;		// philo mutex
+	t_mutex		*mtx;		// philo mutex
+	bool		mtx_initialized;	// flag for initialization status of the mutex mtx
 	int			state;		// philo states from eph_states enums (ready to died), else flag -1
 	t_fork		*fork1;		// pointer to the first fork
 	t_fork		*fork2;		// pointer to the second fork
@@ -94,7 +100,9 @@ typedef struct	s_df
 	long	ttt;			// time to think, modifiable value suiting the algo
 	long	max_meals;		// no. of times each philo should eat before end of simulation, optional arg provided by user
 	t_phil	*philos;		// pointer to the array of philosophers
-	t_mutex	df_mtx;			// dataframe mutex
+	t_fork	*forks;
+	t_mutex	*mtx;			// dataframe mutex
+	bool	mtx_initialized;// flag for initialization status of the mutex mtx
 }				t_df;
 
 
@@ -106,7 +114,8 @@ void	print_errstr(char *str);
 /* -------------------------------- init_df.c -------------------------------- */
 
 t_df	*get_df(void);
-int		init_df(int ac, char **av, t_df *df);
+// int		init_df(int ac, char **av, t_df *df);
+int		init_df(int ac, char **av);
 
 /* ----------------------------- string_utils.c ----------------------------- */
 
@@ -117,7 +126,14 @@ char	*concat_strings(const char *str[]);
 
 /* ----------------------------- parser.c ----------------------------- */
 
-int	import_parameters(int ac, char **av, t_df *df);
+int		parse_arguments(int ac, char **av, t_df *df);
+
+/* ----------------------------- utils.c ----------------------------- */
+
+void	clear_out(t_df *df, int mode);
+
+
+
 
 /* ============================= test functions ============================= */
 
