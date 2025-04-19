@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/17 01:21:58 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/19 22:48:26 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ typedef enum	eph_states
 typedef struct	s_fork
 {
 	int		id;			// starts at 0
-	t_mutex	mtx;		// pointer to the fork mutex
-	bool	mtx_initialized;	// flag for initialization status of the mutex mtx
+	t_mutex	*mtx;		// pointer to the fork mutex
+	bool	mtx_init;	// flag for initialization status of the mutex mtx
 	int		state;		// states: TAKEN / FREE ; from ef_states enums
 	int		with_left;	// flag, init to 0, 1 when state is TAKEN by philo to its left
 	int		with_right;	// flag, init to 0, 1 when state is TAKEN by philo to its right
@@ -84,7 +84,7 @@ typedef struct	s_phil
 	int			id;			// philosopher id number
 	pthread_t	th_id;		// thread id number
 	t_mutex		*mtx;		// philo mutex
-	bool		mtx_initialized;	// flag for initialization status of the mutex mtx
+	bool		mtx_init;	// flag for initialization status of the mutex mtx
 	int			state;		// philo states from eph_states enums (ready to died), else flag -1
 	t_fork		*fork1;		// pointer to the first fork
 	t_fork		*fork2;		// pointer to the second fork
@@ -102,7 +102,8 @@ typedef struct	s_df
 	t_phil	*philos;		// pointer to the array of philosophers
 	t_fork	*forks;
 	t_mutex	*mtx;			// dataframe mutex
-	bool	mtx_initialized;// flag for initialization status of the mutex mtx
+	bool	mtx_init;		// flag for initialization status of the mutex mtx
+	long	sim_start;		// time of start of the simulation
 }				t_df;
 
 
@@ -130,8 +131,8 @@ int		parse_arguments(int ac, char **av, t_df *df);
 
 /* ----------------------------- utils.c ----------------------------- */
 
-void	clear_out(t_df *df, int mode);
-
+// void	clear_out(t_df *df, int mode);
+void	clear_out(t_df *df);
 
 
 
