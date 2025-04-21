@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/19 22:54:31 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:17:04 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(int ac, char **av)
 		return (print_errstr(ERR_MALLOC), -1);
 	if (init_df(ac, av) != 0)
 		return (2);
-
+	
 	test_print_elements();
 	// test_print_time();
 

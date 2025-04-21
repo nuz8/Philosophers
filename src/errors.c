@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:01:45 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/16 16:55:16 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/21 18:38:03 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,18 @@ int	arg_error(void)
 {
 	int	ret;
 
-	ret = ft_fprintf_str(STDERR_FILENO, (const char *[]){R"Syntax error! ",
-		G"Usage options:\n", "\t1. ./philo (no. of philos) (time to die) ",
+	ret = ft_fprintf_str(STDERR_FILENO, (const char *[]){"Syntax error! ",
+		"Usage options:\n", "\t1. ./philo (no. of philos) (time to die) ",
 		"(time to eat) (time to sleep)\n",
 		"\t2. ./philo (no. of philos) (time to die) ",
 		"(time to eat) (time to sleep) ",
-		"[(optional) number of times each philosopher must eat]\n"RST, NULL});
+		"[(optional) number of times each philosopher must eat]\n", NULL});
+	// ret = ft_fprintf_str(STDERR_FILENO, (const char *[]){R"Syntax error! ",
+	// 	G"Usage options:\n", "\t1. ./philo (no. of philos) (time to die) ",
+	// 	"(time to eat) (time to sleep)\n",
+	// 	"\t2. ./philo (no. of philos) (time to die) ",
+	// 	"(time to eat) (time to sleep) ",
+	// 	"[(optional) number of times each philosopher must eat]\n"RST, NULL});
 	if (ret < 0)
 		return (ret);
 	return (0);

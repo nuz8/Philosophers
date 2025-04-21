@@ -6,23 +6,42 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:46:44 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/19 22:49:41 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:11:12 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-
 void	clear_out(t_df *df);
+
+static void	clear_philos(t_df *df);
+static void	clear_forks(t_df *df);
 
 /*
 Function to clean all mallocs and mutex inits
-  - Uses argument 'mode' to indicate whether a certain mutex successfully
-	initialized before that point
-  - Mode = 0, to only free mallocs
-  - Mode = 1, to also destroy the mutex: df->mtx
 */
 void	clear_out(t_df *df)
+{
+	if (df->philos)
+		clear_philos(df);
+	if (df->forks)
+		clear_forks(df);
+	if (df->mtx_init == true)
+		pthread_mutex_destroy(&df->mtx);	
+	if (df)
+		free(df);
+}
+
+/*
+Function to clean all t_phil instances (mallocs and mutexes)
+	- Checks to see if philos pointer has allocation with a null check
+	- Checks if the mutex associated with each philo was initiated using the
+	  the bool mtx_init
+	- If mtx_init is true then destroys the mutex associated with this philo,
+	  and carries on the checks for each element in the philos array
+	- Finally, when all mutexes are destroyed, the philos allocation is free'd
+*/
+static void	clear_philos(t_df *df)
 {
 	int		i;
 
@@ -31,21 +50,34 @@ void	clear_out(t_df *df)
 	{
 		while (++i < df->total_philos)
 			if ((df->philos + i)->mtx_init == true)
-				if (pthread_mutex_destroy((df->philos + i)->mtx) < 0)
+				if (pthread_mutex_destroy(&(df->philos + i)->mtx) < 0)
 					print_errstr(ERR_STH);						// Handling TODO
 		free(df->philos);
+		df->philos = NULL;
 	}
+}
+
+/*
+Function to clean all t_forks instances (mallocs and mutexes)
+	- Checks to see if forks pointer has allocation with a null check
+	- Checks if the mutex associated with each fork was initiated using the
+	  the bool mtx_init
+	- If mtx_init is true then destroys the mutex associated with this fork,
+	  and carries on the checks for each element in the forks array
+	- Finally, when all mutexes are destroyed, the philos allocation is free'd
+*/
+static void	clear_forks(t_df *df)
+{
+	int		i;
+
 	i = -1;
 	if (df->forks)
 	{
 		while (++i < df->total_philos)
 			if ((df->forks + i)->mtx_init == true)
-				if (pthread_mutex_destroy((df->forks + i)->mtx) < 0)
+				if (pthread_mutex_destroy(&(df->forks + i)->mtx) < 0)
 					print_errstr(ERR_STH);						// Handling TODO
 		free(df->forks);
+		df->forks = NULL;
 	}
-	if (df->mtx_init == true)
-		pthread_mutex_destroy(df->mtx);	
-	if (df)
-		free(df);
 }

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 00:56:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/16 16:51:29 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:27:48 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,11 @@ int	parse_arguments(int ac, char **av, t_df *df)
 	df->ttd = ft_atol_tailored(av[2]);
 	df->tte = ft_atol_tailored(av[3]);
 	df->tts = ft_atol_tailored(av[4]);
+	if (df->total_philos < 0 || df->ttd < 0 || df->tte < 0 || df->tts < 0)
+		return (-1);
 	if (ac == 6)
-		df->max_meals = ft_atol_tailored(av[5]);	
-	if (df->total_philos < 0 || df->ttd < 0 || df->tte < 0 || df->tts < 0
-		|| df->max_meals < 0)
+		df->max_meals = ft_atol_tailored(av[5]);
+	if (ac == 6 && df->max_meals < 0)	// To distinguish from spawn-initialized value, and still keep the code robust when user input is negative (incl. -1) or zero
 		return (-1);
 	if (df->ttd < 60 || df->tte < 60 || df->tts < 60)
 		return (print_errstr(ERR_TOOSMALL), -1);

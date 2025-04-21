@@ -6,33 +6,15 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/19 22:40:07 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/21 19:17:57 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-t_df	*get_df(void);
-// int		init_df(int ac, char **av, t_df *df);
 int		init_df(int ac, char **av);
-
-// Function to get the pointer to the dataframe struct (t_df *)
-t_df	*get_df(void)
-{
-	static t_df	*df = NULL;
-
-	if (!df)
-	{
-		df = malloc(sizeof(t_df));
-		if (df)
-		{
-			df->philos = NULL;
-			df->forks = NULL;	
-			df->mtx_init = false;	
-		}
-	}
-	return (df);
-}
+int		init_philos(t_df *df);
+int		init_forks(t_df *df);
 
 // int	init_df(int ac, char **av, t_df *df)
 int	init_df(int ac, char **av)
@@ -42,38 +24,68 @@ int	init_df(int ac, char **av)
 	df = get_df();
 	if (parse_arguments(ac, av, df) < 0)
 		return (-1);
-	
-	df->philos = malloc(sizeof(t_phil) * df->total_philos);
-	if (!df->philos)
-		return (-1);
-	init_philos(df->philos);									// TODO
 
 	df->forks = malloc(sizeof(t_fork) * df->total_philos);
 	if (!df->forks)
 		return (-1);
-	init_forks(df->forks);										// TODO
-	
-	if (pthread_mutex_init(df->mtx, NULL) < 0)					// To be checked: error codes
+	if (init_forks(df) < 0)								// TODO
+		return (-1);
+
+	df->philos = malloc(sizeof(t_phil) * df->total_philos);
+	if (!df->philos)
+		return (-1);
+	if (init_philos(df) < 0)							// TODO
+		return (-1);
+
+	if (pthread_mutex_init(&df->mtx, NULL) < 0)			// To be checked: error codes
 		return (-1);
 	df->mtx_init = true;
 
 	return (0);
 }
 
-// int	init_philosphers(t_df *df)
-// {
-// 	*df = (t_df){
+/*
+Function to init all the philos in the philos array
+	- philo_id starts at 1 and onwards...
+*/
+int	init_philos(t_df *df)
+{
+	int		i;
+	t_phil	*philos;
 
-// 	};
-// }
+	philos = df->philos;
+	i = -1;
+	while (++i < df->total_philos)
+	{
+		spawn_philo(philos + i);
+		(philos + i)->id = i + 1;
+		if (pthread_mutex_init(&(philos + i)->mtx, NULL) < 0)
+			return (-1);
+		(philos + i)->mtx_init = true;
+		if (i == df->total_philos - 1)
+			(philos + i)->last_phil = true;
+	}
+	return (0);
+}
 
 /*
-*shl = (t_shell){
-		.ac = ac,
-		.av = av,
-		.stdio[0] = dup(STDIN_FILENO),
-		.stdio[1] = dup(STDOUT_FILENO),
-		.shlvl = 1,
-		.tmp_file_fd = -1
-	};
+Function to init all forks in the forks array
+	- fork_id starts at 0 and onwards...
 */
+int	init_forks(t_df *df)
+{
+	int		i;
+	t_fork	*forks;
+
+	i = -1;
+	forks = df->forks;
+	while (++i < df->total_philos)
+	{
+		spawn_fork(forks + i);
+		(forks + i)->id = i;
+		if (pthread_mutex_init(&(forks + i)->mtx, NULL) < 0)
+			return (-1);		
+		(forks + i)->mtx_init = true;
+	}
+	return (0);
+}
