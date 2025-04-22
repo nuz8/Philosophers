@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/04/21 19:09:12 by pamatya          ###   ########.fr        #
+#    Updated: 2025/04/22 12:15:45 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,7 @@ IMAGE_NAME = valgrind
 
 # ----------------- Source, Object and Dependency files ----------------- #
 
-SRC_MAIN	=	main.c errors.c init_df.c spawners.c string_utils.c parser.c utils.c
+SRC_MAIN	=	main.c errors.c init_df.c spawners.c string_utils.c parser.c utils.c timers.c
 SRC_TEST	=	test_prints.c
 
 # VPATH		+=	$(D_PTHREADS) $(D_SRC)

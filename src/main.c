@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/21 19:17:04 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:24:53 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,20 @@ int	main(int ac, char **av)
 	df = get_df();
 	if (!df)
 		return (print_errstr(ERR_MALLOC), -1);
-	if (init_df(ac, av) != 0)
-		return (2);
 	
-	test_print_elements();
-	// test_print_time();
+	if (init_df(ac, av) != 0)
+		return (clear_out(df), 2);
+	
+	// Simulation code here; TODO:
+	// Figure out timer fns
+	// 
+	
 
+	
+	// test_print fns
+	test_print_elements();
+	test_print_time();
+	
 	clear_out(df);
 	return (0);
 }

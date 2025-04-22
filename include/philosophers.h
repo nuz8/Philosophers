@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/21 18:36:11 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:29:17 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ typedef struct	s_phil
 	int			state;		// philo states from eph_states enums (ready to died), else flag -1
 	t_fork		*fork1;		// pointer to the first fork
 	t_fork		*fork2;		// pointer to the second fork
+	int			eat_count;	// keep count of the number of times the philo has eaten
 	bool		last_phil;	// 1 if it is the last phil in the round-table
 }				t_phil;
 
@@ -147,6 +148,12 @@ char	*concat_strings(const char *str[]);
 
 int		parse_arguments(int ac, char **av, t_df *df);
 
+/* ----------------------------- timers.c ----------------------------- */
+
+void	keep_time();
+long	get_abs_time(int mode);
+long	get_sim_time(int mode);
+
 /* ----------------------------- utils.c ----------------------------- */
 
 // void	clear_out(t_df *df, int mode);
@@ -157,6 +164,7 @@ void	clear_out(t_df *df);
 /* ============================= test functions ============================= */
 
 void	test_print_elements(void);
+void	test_print_time(void);
 
 #endif
 

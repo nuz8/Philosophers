@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/21 19:17:57 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:38:21 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,22 @@ int	init_df(int ac, char **av)
 	df->forks = malloc(sizeof(t_fork) * df->total_philos);
 	if (!df->forks)
 		return (-1);
-	if (init_forks(df) < 0)								// TODO
+	if (init_forks(df) < 0)
 		return (-1);
 
 	df->philos = malloc(sizeof(t_phil) * df->total_philos);
 	if (!df->philos)
 		return (-1);
-	if (init_philos(df) < 0)							// TODO
+	if (init_philos(df) < 0)
 		return (-1);
 
-	if (pthread_mutex_init(&df->mtx, NULL) < 0)			// To be checked: error codes
+	if (pthread_mutex_init(&df->mtx, NULL) < 0)			// TODO: error codes
 		return (-1);
 	df->mtx_init = true;
 
+	df->start_time = get_abs_time(2);
+	if (df->start_time < 0)
+		return (-1);
 	return (0);
 }
 

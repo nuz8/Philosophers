@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/15 18:36:31 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 15:36:06 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,15 @@ void	test_print_elements(void)
 
 }
 
-// void	test_print_time(void)
-// {
-	
-// }
+void	test_print_time(void)
+{
+	t_df	*df;
+
+	// keep_time();
+	df = get_df();
+
+	printf("Abs df-> start time in milliseconds:	%ld\n", df->start_time);
+	printf("Sim start time in seconds:		%ld\n", get_sim_time(1));
+	printf("Sim start time in milliseconds:	%ld\n", get_sim_time(2));
+	printf("Sim start time in microseconds:	%ld\n", get_sim_time(3));
+}
