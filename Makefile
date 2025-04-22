@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/04/22 12:15:45 by pamatya          ###   ########.fr        #
+#    Updated: 2025/04/22 16:53:38 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,8 +77,15 @@ VALGRIND_OPTS	= 	--leak-check=full \
 					--show-leak-kinds=all \
 					--trace-children=yes \
 					--track-fds=yes \
-					-s \
+					-s
 # --child-silent-after-fork=yes
+
+# ----------------- Helgrind ----------------- #
+HELGRIND_OPTS =		--tool=helgrind \
+					--track-lockorders=yes \
+					--history-level=full \
+					-s
+
 # Leak Sanitizer for leak check on Mac (run: make LEAK=1)
 LEAKSAN			=	liblsan.dylib
 LEAKSAN_DIR		=	/Users/dstinghe/LeakSanitizer
@@ -126,6 +133,9 @@ re: fclean all
 
 valgrind: $(NAME)
 	@valgrind $(VALGRIND_OPTS) ./$(NAME) $(ARGS)
+
+mutex: $(NAME)
+	@valgrind $(HELGRIND_OPTS) ./$(NAME) $(ARGS)
 
 format:
 	@c_formatter_42 main.c $(D_PTHREADS)/*.c $(D_SRC)/*.c $(D_INC)/*.h

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 15:29:17 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 17:27:15 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,7 @@ void	clear_out(t_df *df);
 
 void	test_print_elements(void);
 void	test_print_time(void);
+void	test_print_fork_tags();
 
 #endif
 

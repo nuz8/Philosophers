@@ -6,13 +6,15 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 15:36:06 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 17:33:33 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
 void	test_print_elements(void);
+void	test_print_time(void);
+void	test_print_fork_tags();
 
 void	test_print_elements(void)
 {
@@ -38,4 +40,22 @@ void	test_print_time(void)
 	printf("Sim start time in seconds:		%ld\n", get_sim_time(1));
 	printf("Sim start time in milliseconds:	%ld\n", get_sim_time(2));
 	printf("Sim start time in microseconds:	%ld\n", get_sim_time(3));
+}
+
+void	test_print_fork_tags()
+{
+	t_df	*df;
+	int		i;
+	t_phil	*philos;
+	
+	df = get_df();
+	i = -1;
+	philos = df->philos;
+	while (++i < df->total_philos)
+	{
+		printf("Philosopher no. "Y"%d"RST" has the following forks:\n", (philos + i)->id);
+		printf("Fork-1: fork_id = "G"%d"RST"\n", (philos + i)->fork1->id);
+		printf("Fork-2: fork_id = "G"%d"RST"\n", (philos + i)->fork2->id);
+		printf("\n");
+	}
 }
