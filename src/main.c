@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 17:27:59 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 18:14:24 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,18 @@ int	main(int ac, char **av)
 	// 1. Tag forks in each philo
 	//		to indicate which forks each philo is allowed to pick up or has access to
 	// 2. Initialize threads and write the simulation function to pass to the thread init fn
+	//		for 1 philo
+	//		for 2 philos
+	//		for more philos
 	//
-	//
+	
+	// start_simulation(df);		// TODO
 	
 
 	
-	// test_print fns
+	/*
+	test_print fns
+	*/
 	// test_print_elements();
 	// test_print_time();
 	test_print_fork_tags();
