@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 17:27:15 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 23:44:21 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ typedef struct	s_df
 	t_mutex	mtx;			// dataframe mutex
 	bool	mtx_init;		// flag for initialization status of the mutex mtx
 	long	start_time;		// time of start of the simulation
+	bool	sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
 }				t_df;
 
 
@@ -154,12 +155,15 @@ void	keep_time();
 long	get_abs_time(int mode);
 long	get_sim_time(int mode);
 
+/* ----------------------------- simulation.c ----------------------------- */
+
+int		start_simulation(t_df *df);
+void	*start_dining(void *arg);
+
 /* ----------------------------- utils.c ----------------------------- */
 
 // void	clear_out(t_df *df, int mode);
 void	clear_out(t_df *df);
-
-
 
 /* ============================= test functions ============================= */
 

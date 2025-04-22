@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 18:14:24 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 23:48:46 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int	main(int ac, char **av)
 	
 	if (init_df(ac, av) != 0)
 		return (clear_out(df), 2);
+
+	test_print_elements();
 	
 	// Simulation code here; TODO:
 	// 1. Tag forks in each philo
@@ -39,16 +41,16 @@ int	main(int ac, char **av)
 	//		for more philos
 	//
 	
-	// start_simulation(df);		// TODO
+	start_simulation(df);		// TODO
 	
 
 	
 	/*
 	test_print fns
 	*/
-	// test_print_elements();
 	// test_print_time();
-	test_print_fork_tags();
+	// test_print_fork_tags();
+	test_print_elements();
 	
 	clear_out(df);
 	return (0);

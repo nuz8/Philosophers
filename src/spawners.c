@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 01:09:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/21 23:55:33 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/22 23:18:05 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_df	*get_df(void)
 			df->forks = NULL;
 			df->philos = NULL;
 			df->mtx_init = false;
+			df->sim_finished = false;
 		}
 	}
 	return (df);
