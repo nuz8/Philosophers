@@ -6,14 +6,14 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 23:57:33 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/23 12:19:14 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-int		start_simulation(t_df *df);
-void	*start_dining(void *arg);
+int			start_simulation(t_df *df);
+static void	*start_dining(void *arg);
 
 
 
@@ -46,7 +46,7 @@ int	start_simulation(t_df *df)
 	return (0);
 }
 
-void	*start_dining(void *arg)
+static void	*start_dining(void *arg)
 {
 	t_df	*df;
 	int		i;
@@ -61,5 +61,3 @@ void	*start_dining(void *arg)
 	}
 	return (NULL);
 }
-
-

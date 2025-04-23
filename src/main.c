@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 23:48:46 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/23 00:04:14 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ int	main(int ac, char **av)
 	//		for more philos
 	//
 	
-	start_simulation(df);		// TODO
+	if (start_simulation(df) < 0)
+		return (clear_out(df), 3);		// TODO
 	
 
 	

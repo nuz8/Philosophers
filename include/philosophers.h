@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 23:44:21 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/23 12:14:09 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ Error messages for linux
 typedef pthread_mutex_t	t_mutex;
 
 // ENUMs for fork states
-typedef enum	ef_states
+typedef enum	e_fstates
 {
 	TAKEN,
 	FREE
-}				ef_states;
+}				e_fstates;
 
 // ENUMs for states of the philosophers
-typedef enum	eph_states
+typedef enum	e_phstates
 {
 	TOOK_FORK_1,
 	TOOK_FORK_2,
@@ -78,7 +78,7 @@ typedef enum	eph_states
 	SLEEPING,
 	THINKING,
 	DIED
-}				eph_states;
+}				e_phstates;
 
 
 typedef struct	s_fork
@@ -86,7 +86,7 @@ typedef struct	s_fork
 	int		id;			// starts at 0
 	t_mutex	mtx;		// pointer to the fork mutex
 	bool	mtx_init;	// flag for initialization status of the mutex mtx
-	int		state;		// states: TAKEN / FREE ; from ef_states enums
+	int		state;		// states: TAKEN / FREE ; from e_fstates enums
 	bool	with_left;	// flag, init to 0, 1 when state is TAKEN by philo to its left
 	bool	with_right;	// flag, init to 0, 1 when state is TAKEN by philo to its right
 	int		taker_id;	// philo_id when state is TAKEN, else flag: init to 0
@@ -98,7 +98,7 @@ typedef struct	s_phil
 	pthread_t	th_id;		// thread id number
 	t_mutex		mtx;		// philo mutex
 	bool		mtx_init;	// flag for initialization status of the mutex mtx
-	int			state;		// philo states from eph_states enums (ready to died), else flag -1
+	int			state;		// philo states from e_phstates enums (ready to died), else flag -1
 	t_fork		*fork1;		// pointer to the first fork
 	t_fork		*fork2;		// pointer to the second fork
 	int			eat_count;	// keep count of the number of times the philo has eaten
@@ -158,12 +158,12 @@ long	get_sim_time(int mode);
 /* ----------------------------- simulation.c ----------------------------- */
 
 int		start_simulation(t_df *df);
-void	*start_dining(void *arg);
 
 /* ----------------------------- utils.c ----------------------------- */
 
 // void	clear_out(t_df *df, int mode);
 void	clear_out(t_df *df);
+
 
 /* ============================= test functions ============================= */
 
