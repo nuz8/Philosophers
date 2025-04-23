@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 17:33:33 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/23 13:05:33 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	test_print_elements(void);
 void	test_print_time(void);
 void	test_print_fork_tags();
+void	test_print_logs();
 
 void	test_print_elements(void)
 {
@@ -57,5 +58,22 @@ void	test_print_fork_tags()
 		printf("Fork-1: fork_id = "G"%d"RST"\n", (philos + i)->fork1->id);
 		printf("Fork-2: fork_id = "G"%d"RST"\n", (philos + i)->fork2->id);
 		printf("\n");
+	}
+}
+
+void	test_print_logs()
+{
+	t_df	*df;
+	t_phil	*philos;
+	int		i;
+
+	df = get_df();
+	philos = df->philos;
+	
+	i = -1;
+	while (++i < 100)
+	{
+		// printf("i = %d:\t", i);
+		log_event(philos + (i % df->total_philos), i % 6);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/23 12:14:09 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/23 12:46:50 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ typedef enum	e_phstates
 {
 	TOOK_FORK_1,
 	TOOK_FORK_2,
-	READY,
 	EATING,
 	SLEEPING,
 	THINKING,
@@ -98,7 +97,7 @@ typedef struct	s_phil
 	pthread_t	th_id;		// thread id number
 	t_mutex		mtx;		// philo mutex
 	bool		mtx_init;	// flag for initialization status of the mutex mtx
-	int			state;		// philo states from e_phstates enums (ready to died), else flag -1
+	int			state;		// philo states from e_phstates enums, else flag -1
 	t_fork		*fork1;		// pointer to the first fork
 	t_fork		*fork2;		// pointer to the second fork
 	int			eat_count;	// keep count of the number of times the philo has eaten
@@ -159,6 +158,10 @@ long	get_sim_time(int mode);
 
 int		start_simulation(t_df *df);
 
+/* ----------------------------- loggers.c ----------------------------- */
+
+void	log_event(t_phil *philo, e_phstates state);
+
 /* ----------------------------- utils.c ----------------------------- */
 
 // void	clear_out(t_df *df, int mode);
@@ -170,6 +173,7 @@ void	clear_out(t_df *df);
 void	test_print_elements(void);
 void	test_print_time(void);
 void	test_print_fork_tags();
+void	test_print_logs();
 
 #endif
 

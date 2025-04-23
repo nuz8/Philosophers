@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:58:17 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/23 12:20:02 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/23 13:06:52 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ philosopher
 void	log_event(t_phil *philo, e_phstates state)
 {
 	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
-		printf("%ld	%d has taken a fork\n", get_sim_time(2), philo->id);
+		printf("%ld	"Y"%d "C"has taken a fork"RST"\n", get_sim_time(2), philo->id);
 	else if (state == EATING)
-		printf("%ld	%d is eating\n", get_sim_time(2), philo->id);
+		printf("%ld	"Y"%d "G"is eating"RST"\n", get_sim_time(2), philo->id);
 	else if (state == SLEEPING)
-		printf("%ld	%d is sleeping\n", get_sim_time(2), philo->id);
+		printf("%ld	"Y"%d "B"is sleeping"RST"\n", get_sim_time(2), philo->id);
 	else if (state == THINKING)
-		printf("%ld	%d is thinking\n", get_sim_time(2), philo->id);
+		printf("%ld	"Y"%d "W"is thinking"RST"\n", get_sim_time(2), philo->id);
 	else if (state == DIED)
-		printf("%ld	%d died\n", get_sim_time(2), philo->id);
+		printf("%ld	"Y"%d "R"died"RST"\n", get_sim_time(2), philo->id);
 }
