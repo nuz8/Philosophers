@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/23 11:57:38 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/24 13:02:13 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ of the parameter mode
 	- Mode 2: returns absolute time in milliseconds
 	- Mode 3: returns absolute time in microseconds
 	
-Note*: absolute time means as returned by gettimeofday() fn (starting Jan 1970)
+Note*: absolute time means as returned by gettimeofday() fn (Jan 1970 onwards)
 */
 long	get_abs_time(int mode)
 {
@@ -66,11 +66,11 @@ long	get_sim_time(int mode)
 	sim_time = 0;
 	abs_start_time = 0;
 	if (mode == 1)			// sec
-		abs_start_time = df->start_time / 1000;
+		abs_start_time = df->start_time / 1000000;
 	else if (mode == 2)		// ms
-		abs_start_time = df->start_time;
+		abs_start_time = df->start_time / 1000;
 	else if (mode == 3)		// us
-		abs_start_time = df->start_time * 1000;
+		abs_start_time = df->start_time;
 	sim_time = get_abs_time(mode) - abs_start_time;
 	return (sim_time);
 }

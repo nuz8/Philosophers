@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/23 12:46:50 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/24 13:57:38 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,11 @@ typedef enum	e_phstates
 	DIED
 }				e_phstates;
 
+typedef enum	e_turn
+{
+	EVEN,
+	ODD
+}				e_turn;
 
 typedef struct	s_fork
 {
@@ -86,38 +91,39 @@ typedef struct	s_fork
 	t_mutex	mtx;		// pointer to the fork mutex
 	bool	mtx_init;	// flag for initialization status of the mutex mtx
 	int		state;		// states: TAKEN / FREE ; from e_fstates enums
-	bool	with_left;	// flag, init to 0, 1 when state is TAKEN by philo to its left
-	bool	with_right;	// flag, init to 0, 1 when state is TAKEN by philo to its right
 	int		taker_id;	// philo_id when state is TAKEN, else flag: init to 0
 }				t_fork;
 
 typedef struct	s_phil
 {
-	int			id;			// philosopher id number
-	pthread_t	th_id;		// thread id number
-	t_mutex		mtx;		// philo mutex
-	bool		mtx_init;	// flag for initialization status of the mutex mtx
-	int			state;		// philo states from e_phstates enums, else flag -1
-	t_fork		*fork1;		// pointer to the first fork
-	t_fork		*fork2;		// pointer to the second fork
-	int			eat_count;	// keep count of the number of times the philo has eaten
-	bool		last_phil;	// 1 if it is the last phil in the round-table
+	int			id;				// philosopher id number
+	pthread_t	th_id;			// thread id number
+	t_mutex		mtx;			// philo mutex
+	bool		mtx_init;		// flag for initialization status of the mutex mtx
+	int			state;			// philo states from e_phstates enums, else flag -1
+	t_fork		*fork1;			// pointer to the first fork
+	t_fork		*fork2;			// pointer to the second fork
+	int			meals_left;		// keep count of the number of times the philo has eaten
+	long		lastmeal_time;	// time stamp when the philosopher last ate
+	bool		last_philo;		// 1 if it is the last phil in the round-table
+	bool		dead;
 }				t_phil;
 
 typedef struct	s_df
 {
-	long	total_philos;	// total number of philos from user
-	long	ttd;			// time to die from user, stored in microseconds
-	long	tte;			// time to eat from user, stored in microseconds
-	long	tts;			// time to sleep from user, stored in microseconds
-	long	ttt;			// time to think, modifiable value suiting the algo
-	long	max_meals;		// no. of times each philo should eat before end of simulation, optional arg provided by user
-	t_fork	*forks;
-	t_phil	*philos;		// pointer to the array of philosophers
-	t_mutex	mtx;			// dataframe mutex
-	bool	mtx_init;		// flag for initialization status of the mutex mtx
-	long	start_time;		// time of start of the simulation
-	bool	sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
+	long		total_philos;	// total number of philos from user
+	long		ttd;			// time to die from user, stored in microseconds
+	long		tte;			// time to eat from user, stored in microseconds
+	long		tts;			// time to sleep from user, stored in microseconds
+	long		ttt;			// time to think, modifiable value suiting the algo
+	long		max_meals;		// no. of times each philo should eat before end of simulation, optional arg provided by user
+	t_fork		*forks;			// pointer to the array of forks
+	t_phil		*philos;		// pointer to the array of philosophers
+	t_mutex		mtx;			// dataframe mutex
+	bool		mtx_init;		// flag for initialization status of the mutex mtx
+	pthread_t	concierge;		// concierge is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
+	long		start_time;		// time of start of the simulation in microseconds
+	bool		sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
 }				t_df;
 
 

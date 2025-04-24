@@ -6,15 +6,16 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/23 12:19:14 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/24 13:58:08 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
 int			start_simulation(t_df *df);
-static void	*start_dining(void *arg);
 
+static void	*start_dining(void *arg);
+static void	*supervise(void *arg);
 
 
 /*
@@ -39,10 +40,15 @@ int	start_simulation(t_df *df)
 			return (-1);
 	}
 	
+	if (pthread_create(&df->concierge, NULL, supervise, df) < 0)
+		return (-1);
+	
 	i = -1;
 	while (++i < df->total_philos)
 		if (pthread_join((philos + i)->th_id, NULL) < 0)
 			return (-1);
+	if (pthread_join(df->concierge, NULL) < 0)
+		return (-1);
 	return (0);
 }
 
@@ -52,12 +58,43 @@ static void	*start_dining(void *arg)
 	int		i;
 	
 	df = (t_df *)arg;
+	
+	
+
+
+	
+	return (NULL);
+}
+
+/*
+Function to execute supervising role using the df-thread concierge
+
+*/
+static void	*supervise(void *arg)
+{
+	t_df	*df;
+	int		meal_completions;
+	int		i;
+	
+	df = (t_df *)arg;
 	i = -1;
-	while (++i < 1000000)
+	while (1)
 	{
-		pthread_mutex_lock(&df->mtx);
-		(df->max_meals)++;
-		pthread_mutex_unlock(&df->mtx);
+		while (++i < df->total_philos)
+		{
+			if ((df->philos + i)->dead == true)
+			{
+				df->sim_finished = true;
+				break ;
+			}
+			meal_completions = 0;
+			if ((df->philos + i)->meals_left == 0)
+				meal_completions++;
+		}
+		if (meal_completions == df->max_meals)
+			df->sim_finished = true;
+		if (df->sim_finished == true)
+			break ;
 	}
 	return (NULL);
 }

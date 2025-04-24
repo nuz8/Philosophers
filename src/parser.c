@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 00:56:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/21 19:27:48 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/24 12:55:03 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ to the appropriate elements in the dataframe
 int	parse_arguments(int ac, char **av, t_df *df)
 {
 	df->total_philos = ft_atol_tailored(av[1]);
-	df->ttd = ft_atol_tailored(av[2]);
-	df->tte = ft_atol_tailored(av[3]);
-	df->tts = ft_atol_tailored(av[4]);
+	df->ttd = ft_atol_tailored(av[2]) * 1000;
+	df->tte = ft_atol_tailored(av[3]) * 1000;
+	df->tts = ft_atol_tailored(av[4]) * 1000;
 	if (df->total_philos < 0 || df->ttd < 0 || df->tte < 0 || df->tts < 0)
 		return (-1);
 	if (ac == 6)

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/22 23:17:19 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/24 13:02:01 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,7 @@ int	init_df(int ac, char **av)
 	df = get_df();
 	if (parse_arguments(ac, av, df) < 0)
 		return (-1);
-
-	df->forks = malloc(sizeof(t_fork) * df->total_philos);
-	if (!df->forks)
-		return (-1);
 	if (init_forks(df) < 0)
-		return (-1);
-
-	df->philos = malloc(sizeof(t_phil) * df->total_philos);
-	if (!df->philos)
 		return (-1);
 	if (init_philos(df) < 0)
 		return (-1);
@@ -43,8 +35,7 @@ int	init_df(int ac, char **av)
 	if (pthread_mutex_init(&df->mtx, NULL) < 0)			// TODO: error codes
 		return (-1);
 	df->mtx_init = true;
-
-	df->start_time = get_abs_time(2);
+	df->start_time = get_abs_time(3);		// maybe this should only be assigned at the start of the simulation
 	if (df->start_time < 0)
 		return (-1);
 	return (0);
@@ -57,17 +48,18 @@ Function to init all forks in the forks array
 int	init_forks(t_df *df)
 {
 	int		i;
-	t_fork	*forks;
 
 	i = -1;
-	forks = df->forks;
+	df->forks = malloc(sizeof(t_fork) * df->total_philos);
+	if (!df->forks)
+		return (-1);
 	while (++i < df->total_philos)
 	{
-		spawn_fork(forks + i);
-		(forks + i)->id = i;
-		if (pthread_mutex_init(&(forks + i)->mtx, NULL) < 0)
+		spawn_fork(df->forks + i);
+		(df->forks + i)->id = i;
+		if (pthread_mutex_init(&(df->forks + i)->mtx, NULL) < 0)
 			return (-1);		
-		(forks + i)->mtx_init = true;
+		(df->forks + i)->mtx_init = true;
 	}
 	return (0);
 }
@@ -79,20 +71,24 @@ Function to init all the philos in the philos array
 int	init_philos(t_df *df)
 {
 	int		i;
-	t_phil	*philos;
 
-	philos = df->philos;
+	df->philos = malloc(sizeof(t_phil) * df->total_philos);
+	if (!df->philos)
+		return (-1);
 	i = -1;
 	while (++i < df->total_philos)
 	{
-		spawn_philo(philos + i);
-		(philos + i)->id = i + 1;
-		if (pthread_mutex_init(&(philos + i)->mtx, NULL) < 0)
+		spawn_philo(df->philos + i);
+		(df->philos + i)->id = i + 1;
+		if (pthread_mutex_init(&(df->philos + i)->mtx, NULL) < 0)
 			return (-1);
-		(philos + i)->mtx_init = true;
+		(df->philos + i)->mtx_init = true;
 		if (i == df->total_philos - 1)
-			(philos + i)->last_phil = true;
-		tag_forks(philos + i);
+			(df->philos + i)->last_philo = true;
+		tag_forks(df->philos + i);
+		df->philos->meals_left = df->max_meals;
+		if (i + 1 == df->total_philos)
+			df->philos->last_philo = true;
 	}
 	return (0);
 }
