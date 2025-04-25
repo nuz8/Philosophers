@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 13:02:13 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/24 18:23:31 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ long	get_sim_time(int mode)
 
 
 // Test function for gettimeofday() fn
-void	keep_time()
+void	keep_time(void)
 {
 	struct timeval	tv;
 	long			sec;

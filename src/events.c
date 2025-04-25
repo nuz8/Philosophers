@@ -6,13 +6,16 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 13:39:38 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 14:58:25 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
+void	philo_pickup_forks();
 void	philo_eat(t_df *df, t_phil *philo);
+void	philo_sleep(t_df *df, t_phil *philo);
+void	philo_think(t_df *df, t_phil *philo);
 
 static void	update_fork(t_fork *fork, t_phil *philo, e_fstates state);
 
@@ -57,6 +60,12 @@ void	philo_eat(t_df *df, t_phil *philo)
 	pthread_mutex_unlock(&philo->fork1->mtx);
 	update_fork(&philo->fork2, philo, FREE);
 	pthread_mutex_unlock(&philo->fork2->mtx);
+}
+
+void	philo_pickup_forks()
+{
+	// Here sits the algorithm for odd and even philo fork pick-ups
+	
 }
 
 void	philo_sleep(t_df *df, t_phil *philo)

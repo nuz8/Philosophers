@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:01:45 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/21 18:38:03 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 00:28:20 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int		arg_error(void);
 void	print_errstr(char *str);
+int		print_mutex_error(e_mtx_op operation, int err_code);
+
 
 int	arg_error(void)
 {
@@ -39,4 +41,32 @@ int	arg_error(void)
 void	print_errstr(char *str)
 {
 	write(STDERR_FILENO, str, ft_strlen(str));
+}
+
+/*
+Function to print mutex error strings based on error codes
+	- Prints nothing if there is no error and return 0
+	- Prints mutex errors if an error is detected and returns the error code
+	  associated to the mutex error
+*/
+int	print_mutex_error(e_mtx_op operation, int err_code)
+{
+	if (err_code == 0)
+		return (0);
+	else
+	{
+		if (operation == INIT && err_code == EINVAL)
+			print_errstr(ERR_INIT_EINVAL);
+		else if (operation == INIT && err_code == ENOMEM)
+			print_errstr(ERR_INIT_ENOMEM);
+		else if (operation != INIT && err_code == EINVAL)
+			print_errstr(ERR_GEN_EINVAL);
+		else if (operation == LOCK && err_code == EDEADLK)
+			print_errstr(ERR_LOCK_EDEADLK);
+		else if (operation == UNLOCK && err_code == EPERM)
+			print_errstr(ERR_UNLOCK_EPERM);
+		else if (operation == DESTROY && err_code == EBUSY)
+			print_errstr(ERR_DEST_EBUSY);
+		return (err_code);
+	}
 }

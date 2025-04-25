@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 13:57:38 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 00:54:22 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ RST is to reset the colour after changing it...should be used everytime
 # define W		"\033[1;37m"	// Bold White
 # define RST	"\033[0m"		// Reset to default
 
-/*
-Error messages for mac
-*/
+/* ----------------------------- Error Messages ----------------------------- */
+
+//Error messages for mac
 // # define ERR_MALLOC		R"Error: "Y"malloc failed\n"RST
 // # define ERR_INVALID	R"Error: "Y"invalid characters\n"RST
 // # define ERR_NEGATIVE	R"Error: "Y"input is negative\n"RST
@@ -47,9 +47,8 @@ Error messages for mac
 
 // # define ERR_STH		R"Error: "Y"SOME ERROR THAT NEEDS ADDRESSING\n"RST
 
-/*
-Error messages for linux
-*/
+
+// Error messages for linux
 # define ERR_MALLOC		"Error: malloc failed\n"
 # define ERR_INVALID	"Error: invalid characters\n"
 # define ERR_NEGATIVE	"Error: input is negative\n"
@@ -58,9 +57,22 @@ Error messages for linux
 
 # define ERR_STH		"Error: SOME ERROR THAT NEEDS ADDRESSING\n"
 
+// Standard error messages for mutex errors
+# define ERR_INIT_EINVAL "The value specified by attr is invalid.\n"
+# define ERR_INIT_ENOMEM \
+	"The process cannot allocate enough memory to create another mutex.\n"
+# define ERR_GEN_EINVAL "The value specified by mutex is invalid.\n"
+# define ERR_LOCK_EDEADLK \
+"A deadlock would occur if the thread blocked waiting for mutex.\n"
+# define ERR_UNLOCK_EPERM "The current thread does not hold a lock on mutex.\n"
+# define ERR_DEST_EBUSY "Mutex is locked.\n"
+
+/* ----------------------------- Error Messages ----------------------------- */
+
 
 typedef pthread_mutex_t	t_mutex;
 
+/* ------------------- enums ------------------- */
 // ENUMs for fork states
 typedef enum	e_fstates
 {
@@ -85,6 +97,18 @@ typedef enum	e_turn
 	ODD
 }				e_turn;
 
+// Enum type for mutex operations
+typedef enum	e_mtx_op
+{
+	INIT,
+	LOCK,
+	UNLOCK,
+	DESTROY
+}				e_mtx_op;
+
+/* ==================== enums ==================== */
+
+/* ------------------------- structs ------------------------- */
 typedef struct	s_fork
 {
 	int		id;			// starts at 0
@@ -126,11 +150,15 @@ typedef struct	s_df
 	bool		sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
 }				t_df;
 
+/* ========================= structs ========================= */
 
+
+/* -------------------------- function prototypes -------------------------- */
 /* -------------------------------- errors.c -------------------------------- */
 
 int		arg_error(void);
 void	print_errstr(char *str);
+int		print_mutex_error(e_mtx_op operation, int err_code);
 
 /* ------------------------------- spawners.c ------------------------------- */
 
@@ -156,7 +184,6 @@ int		parse_arguments(int ac, char **av, t_df *df);
 
 /* ----------------------------- timers.c ----------------------------- */
 
-void	keep_time();
 long	get_abs_time(int mode);
 long	get_sim_time(int mode);
 
@@ -168,6 +195,18 @@ int		start_simulation(t_df *df);
 
 void	log_event(t_phil *philo, e_phstates state);
 
+/* ----------------------------- getter_fns.c ----------------------------- */
+
+int		get_bool(t_mutex *mtx, bool *source, bool *fetch);	// destination and put for the setter function
+int		get_int(t_mutex *mtx, int *source);
+long	get_long(t_mutex *mtx, long *source);
+
+/* ----------------------------- setter_fns.c ----------------------------- */
+
+int		set_bool(t_mutex *mtx, bool *destination, bool put);
+int		set_int(t_mutex *mtx, int *destination, int put);
+int		set_long(t_mutex *mtx, long *destination, long put);
+
 /* ----------------------------- utils.c ----------------------------- */
 
 // void	clear_out(t_df *df, int mode);
@@ -178,8 +217,11 @@ void	clear_out(t_df *df);
 
 void	test_print_elements(void);
 void	test_print_time(void);
-void	test_print_fork_tags();
-void	test_print_logs();
+void	test_print_fork_tags(void);
+void	test_print_logs(void);
+void	test_print_mutex_errors(void);
+
+void	keep_time(void);
 
 #endif
 

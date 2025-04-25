@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/23 13:05:33 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 12:58:46 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	test_print_elements(void);
 void	test_print_time(void);
 void	test_print_fork_tags();
 void	test_print_logs();
+void	test_print_mutex_errors();
+
 
 void	test_print_elements(void)
 {
@@ -71,9 +73,20 @@ void	test_print_logs()
 	philos = df->philos;
 	
 	i = -1;
-	while (++i < 100)
+	while (++i < 500000)
 	{
 		// printf("i = %d:\t", i);
 		log_event(philos + (i % df->total_philos), i % 6);
 	}
+}
+
+
+void	test_print_mutex_errors()
+{
+	print_mutex_error(INIT, EINVAL);
+	print_mutex_error(INIT, ENOMEM);
+	print_mutex_error(LOCK, EINVAL);
+	print_mutex_error(LOCK, EDEADLK);
+	print_mutex_error(UNLOCK, EPERM);
+	print_mutex_error(DESTROY, EBUSY);
 }

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 13:58:08 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 13:56:38 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ int	start_simulation(t_df *df)
 	philos = df->philos;
 	while (++i < df->total_philos)
 	{
-		if (pthread_create(&(philos + i)->th_id, NULL, start_dining, df) < 0)
+		if (pthread_create(&(philos + i)->th_id, NULL, start_dining,
+				philos + i) < 0)
 			return (-1);
 	}
 	
@@ -52,16 +53,48 @@ int	start_simulation(t_df *df)
 	return (0);
 }
 
+// static void	*start_dining(void *arg)
+// {
+// 	t_df	*df;
+// 	int		i;
+	
+// 	df = (t_df *)arg;
+// 	i = -1;
+// 	while (++i < df->total_philos)
+// 	{
+// 		// if (df->sim_finished == true)
+// 		// 	break ;
+// 		// pthread_mutex_lock(&df->mtx);
+// 		// df->max_meals++;
+// 		// pthread_mutex_unlock(&df->mtx);
+
+// 		while ((df->philos + i)->meals_left != 0)
+// 		{
+// 			pthread_mutex_lock(&((df->philos + i)->mtx));
+			
+// 			(df->philos + i)->meals_left--;
+// 			pthread_mutex_unlock(&((df->philos + i)->mtx));
+// 		}
+// 	}
+	
+// 	return (NULL);
+// }
+
 static void	*start_dining(void *arg)
 {
 	t_df	*df;
+	t_phil	*philo;
 	int		i;
 	
-	df = (t_df *)arg;
-	
-	
+	df = get_df();
+	philo = (t_phil *)arg;
+	i = -1;
+	while (get_int(&philo->mtx, &philo->meals_left))
+	{
+		
 
-
+		
+	}
 	
 	return (NULL);
 }
@@ -69,31 +102,37 @@ static void	*start_dining(void *arg)
 /*
 Function to execute supervising role using the df-thread concierge
 
+Possible data-races info:
+	Accessed philo-fields: philos->	(dead, meals_left)
+	Accessed df-fields:		df->	(total_philos, max_meals, sim_finished)
 */
 static void	*supervise(void *arg)
 {
 	t_df	*df;
-	int		meal_completions;
+	int		philos_full;
 	int		i;
 	
 	df = (t_df *)arg;
-	i = -1;
 	while (1)
 	{
+		philos_full = 0;
+		i = -1;
 		while (++i < df->total_philos)
 		{
+			pthread_mutex_lock(&((df->philos + i)->mtx));
 			if ((df->philos + i)->dead == true)
 			{
 				df->sim_finished = true;
+				pthread_mutex_unlock(&((df->philos + i)->mtx));
 				break ;
 			}
-			meal_completions = 0;
 			if ((df->philos + i)->meals_left == 0)
-				meal_completions++;
+				philos_full++;
+			pthread_mutex_unlock(&((df->philos + i)->mtx));
 		}
-		if (meal_completions == df->max_meals)
-			df->sim_finished = true;
-		if (df->sim_finished == true)
+		if (philos_full == df->total_philos)
+			df->sim_finished = true;	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
+		if (df->sim_finished == true)	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
 			break ;
 	}
 	return (NULL);
