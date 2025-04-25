@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/25 12:58:46 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 20:04:10 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	test_print_time(void);
 void	test_print_fork_tags();
 void	test_print_logs();
 void	test_print_mutex_errors();
+void	test_print_fork_owners();
+void	test_print_philo_presence(t_phil *philo);
 
 
 void	test_print_elements(void)
@@ -80,7 +82,6 @@ void	test_print_logs()
 	}
 }
 
-
 void	test_print_mutex_errors()
 {
 	print_mutex_error(INIT, EINVAL);
@@ -89,4 +90,38 @@ void	test_print_mutex_errors()
 	print_mutex_error(LOCK, EDEADLK);
 	print_mutex_error(UNLOCK, EPERM);
 	print_mutex_error(DESTROY, EBUSY);
+}
+
+void	test_print_fork_owners()
+{
+	t_df	*df;
+	int		i;
+
+	df = get_df();
+	
+	i = -1;
+	while (++i < df->total_philos)
+	{
+		printf("Fork "G"%d"RST" is with Philo "Y"%d\n"RST, (df->forks + i)->id,
+			(df->forks + i)->taker_id);
+	}
+}
+
+void	test_print_philo_presence(t_phil *philo)
+{
+	// t_df	*df;
+	// int		i;
+
+	// df = get_df();
+	// i = -1;	
+	// if (!philo)
+	// {
+	// 	while (++i < df->total_philos)
+	// 	{
+	// 		if ((df->philos + i)->id == (i + 1))
+	// 			printf("Philo "Y"%d"RST" is here.\n", (df->philos + i)->id);
+	// 	}
+	// }
+	// else
+	printf("\t\t\tPhilo "Y"%d"RST" is here.\n", philo->id);
 }

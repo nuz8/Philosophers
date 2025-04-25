@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/25 13:56:38 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 20:19:10 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,19 @@ int	start_simulation(t_df *df)
 	while (++i < df->total_philos)
 	{
 		if (pthread_create(&(philos + i)->th_id, NULL, start_dining,
-				philos + i) < 0)
+				(philos + i)) < 0)
 			return (-1);
 	}
-	
-	if (pthread_create(&df->concierge, NULL, supervise, df) < 0)
+	if (pthread_create(&df->manager, NULL, supervise, df) < 0)
 		return (-1);
+
+
 	
 	i = -1;
 	while (++i < df->total_philos)
 		if (pthread_join((philos + i)->th_id, NULL) < 0)
 			return (-1);
-	if (pthread_join(df->concierge, NULL) < 0)
+	if (pthread_join(df->manager, NULL) < 0)
 		return (-1);
 	return (0);
 }
@@ -84,23 +85,26 @@ static void	*start_dining(void *arg)
 {
 	t_df	*df;
 	t_phil	*philo;
-	int		i;
 	
 	df = get_df();
 	philo = (t_phil *)arg;
-	i = -1;
-	while (get_int(&philo->mtx, &philo->meals_left))
-	{
-		
-
-		
-	}
 	
+	
+	// test_print_philo_presence(philo);	// TPF
+	
+	while (get_int(&philo->mtx, &philo->meals_left) > 0)
+	{
+		// test_print_philo_presence(philo);	// TPF
+		philo_eat(df, philo);
+		philo_sleep(df, philo);
+		philo_think(df, philo);
+	}
+
 	return (NULL);
 }
 
 /*
-Function to execute supervising role using the df-thread concierge
+Function to execute supervising role using the df-thread manager
 
 Possible data-races info:
 	Accessed philo-fields: philos->	(dead, meals_left)

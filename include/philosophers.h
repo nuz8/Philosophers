@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/25 00:54:22 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 20:18:25 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,14 @@ RST is to reset the colour after changing it...should be used everytime
 	"The process cannot allocate enough memory to create another mutex.\n"
 # define ERR_GEN_EINVAL "The value specified by mutex is invalid.\n"
 # define ERR_LOCK_EDEADLK \
-"A deadlock would occur if the thread blocked waiting for mutex.\n"
+	"A deadlock would occur if the thread blocked waiting for mutex.\n"
 # define ERR_UNLOCK_EPERM "The current thread does not hold a lock on mutex.\n"
 # define ERR_DEST_EBUSY "Mutex is locked.\n"
 
 /* ----------------------------- Error Messages ----------------------------- */
 
+# define INCREASE -10
+# define DECREASE -20
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -91,10 +93,17 @@ typedef enum	e_phstates
 	DIED
 }				e_phstates;
 
+typedef enum	e_units
+{
+	SECOND,
+	MILLI,
+	MICRO
+}				e_units;
+
 typedef enum	e_turn
 {
-	EVEN,
-	ODD
+	ODD_PHILOS,
+	EVEN_PHILOS
 }				e_turn;
 
 // Enum type for mutex operations
@@ -141,11 +150,13 @@ typedef struct	s_df
 	long		tts;			// time to sleep from user, stored in microseconds
 	long		ttt;			// time to think, modifiable value suiting the algo
 	long		max_meals;		// no. of times each philo should eat before end of simulation, optional arg provided by user
+	
 	t_fork		*forks;			// pointer to the array of forks
 	t_phil		*philos;		// pointer to the array of philosophers
 	t_mutex		mtx;			// dataframe mutex
 	bool		mtx_init;		// flag for initialization status of the mutex mtx
-	pthread_t	concierge;		// concierge is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
+	pthread_t	manager;		// manager is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
+	int			turn;
 	long		start_time;		// time of start of the simulation in microseconds
 	bool		sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
 }				t_df;
@@ -191,6 +202,13 @@ long	get_sim_time(int mode);
 
 int		start_simulation(t_df *df);
 
+/* ----------------------------- events.c ----------------------------- */
+
+// void	philo_pickup_forks();
+int		philo_eat(t_df *df, t_phil *philo);
+int		philo_sleep(t_df *df, t_phil *philo);
+int		philo_think(t_df *df, t_phil *philo);
+
 /* ----------------------------- loggers.c ----------------------------- */
 
 void	log_event(t_phil *philo, e_phstates state);
@@ -220,7 +238,11 @@ void	test_print_time(void);
 void	test_print_fork_tags(void);
 void	test_print_logs(void);
 void	test_print_mutex_errors(void);
+void	test_print_fork_owners();
+void	test_print_philo_presence(t_phil *philo);
 
+
+int		test_get_int(t_mutex *mtx, int *source, t_phil *philo);
 void	keep_time(void);
 
 #endif

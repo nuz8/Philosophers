@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 13:02:01 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 20:17:13 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	init_philos(t_df *df)
 		if (i == df->total_philos - 1)
 			(df->philos + i)->last_philo = true;
 		tag_forks(df->philos + i);
-		df->philos->meals_left = df->max_meals;
+		(df->philos + i)->meals_left = df->max_meals;
 		if (i + 1 == df->total_philos)
 			df->philos->last_philo = true;
 	}

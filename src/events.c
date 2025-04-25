@@ -6,19 +6,20 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/25 14:58:25 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 20:01:44 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-void	philo_pickup_forks();
-void	philo_eat(t_df *df, t_phil *philo);
-void	philo_sleep(t_df *df, t_phil *philo);
-void	philo_think(t_df *df, t_phil *philo);
 
+int		philo_eat(t_df *df, t_phil *philo);
+int		philo_sleep(t_df *df, t_phil *philo);
+int		philo_think(t_df *df, t_phil *philo);
+
+static int	philo_pickup_forks(t_df *df, t_phil *philo);
+static int	philo_drop_forks(t_df *df, t_phil *philo);
 static void	update_fork(t_fork *fork, t_phil *philo, e_fstates state);
-
 
 /*
 Events to be created:
@@ -37,47 +38,84 @@ Function to simulate eating
 	- Update philo fields to indicate eating state
 	- Update no. of meals left to be eaten by the philo (meals_left--)
 */
-void	philo_eat(t_df *df, t_phil *philo)
-{
-	pthread_mutex_lock(&philo->fork1->mtx);
-	update_fork(&philo->fork1, philo, TAKEN);
-	pthread_mutex_lock(&philo->fork2->mtx);
-	update_fork(&philo->fork2, philo, TAKEN);
+int	philo_eat(t_df *df, t_phil *philo)
+{	
+	// test_print_philo_presence(philo);
+	philo_pickup_forks(df, philo);
 	
-	pthread_mutex_lock(&df->mtx);
+	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
+		return (-1);
 	log_event(philo, EATING);
-	pthread_mutex_unlock(&df->mtx);
+	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
+		return (-1);
 
-	pthread_mutex_lock(&philo->mtx);
+	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->mtx)) != 0)
+		return (-1);
 	philo->lastmeal_time = get_sim_time(2);
 	philo->state = EATING;
 	usleep(df->tte);
 	philo->meals_left--;
 	philo->state = -1;
-	pthread_mutex_unlock(&philo->mtx);
-	
-	update_fork(&philo->fork1, philo, FREE);
-	pthread_mutex_unlock(&philo->fork1->mtx);
-	update_fork(&philo->fork2, philo, FREE);
-	pthread_mutex_unlock(&philo->fork2->mtx);
+	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&philo->mtx)) != 0)
+		return (-1);
+
+	philo_drop_forks(df, philo);
+	return (0);
 }
 
-void	philo_pickup_forks()
+// Function to lock fork mutexes and update fork states
+static int	philo_pickup_forks(t_df *df, t_phil *philo)
 {
-	// Here sits the algorithm for odd and even philo fork pick-ups
-	
+	// if (df->turn == ODD_PHILOS)
+	(void)df;
+	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork1->mtx)) != 0)
+		return (-1);
+	update_fork(philo->fork1, philo, TAKEN);
+	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork2->mtx)) != 0)
+		return (-1);
+	update_fork(philo->fork2, philo, TAKEN);
+
+	// test_print_fork_owners();	// TPF
+	// test_print_philo_presence(philo);	// TPF
+	return (0);
 }
 
-void	philo_sleep(t_df *df, t_phil *philo)
+// Function to unlock fork mutexes and update fork states
+static int	philo_drop_forks(t_df *df, t_phil *philo)
 {
+	(void)df;
+	update_fork(philo->fork1, philo, FREE);
+	if (print_mutex_error(UNLOCK,
+			pthread_mutex_unlock(&philo->fork1->mtx)) != 0)
+		return (-1);
+	update_fork(philo->fork2, philo, FREE);
+	if (print_mutex_error(UNLOCK,
+			pthread_mutex_unlock(&philo->fork2->mtx)) != 0)
+		return (-1);
+	
+	return (0);
+}
+
+int	philo_sleep(t_df *df, t_phil *philo)
+{
+	
+	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
+		return (-1);
+	log_event(philo, SLEEPING);
+	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
+		return (-1);
+	
 	philo->state = SLEEPING;
 	usleep(df->tts);
 	philo->state = -1;
+	return (0);
 }
 
-void	philo_think(t_df *df, t_phil *philo)
+int	philo_think(t_df *df, t_phil *philo)
 {
-	
+	(void)df;
+	log_event(philo, THINKING);
+	return (0);
 }
 
 static void	update_fork(t_fork *fork, t_phil *philo, e_fstates state)

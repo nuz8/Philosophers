@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/25 12:53:50 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/25 17:58:06 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	main(int ac, char **av)
 	//
 	
 	if (start_simulation(df) < 0)
-		return (clear_out(df), 3);		// TODO
+		return (clear_out(df), 3);
 	
 
 	
@@ -50,7 +50,7 @@ int	main(int ac, char **av)
 	// test_print_time();
 	// test_print_fork_tags();
 	// test_print_elements();
-	test_print_logs();
+	// test_print_logs();
 	// test_print_mutex_errors();
 	
 	clear_out(df);
