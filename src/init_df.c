@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/25 20:17:13 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/26 01:11:33 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	init_df(int ac, char **av)
 	if (pthread_mutex_init(&df->mtx, NULL) < 0)			// TODO: error codes
 		return (-1);
 	df->mtx_init = true;
-	df->start_time = get_abs_time(3);		// maybe this should only be assigned at the start of the simulation
+	df->start_time = get_abs_time(MICRO);		// maybe this should only be assigned at the start of the simulation
 	if (df->start_time < 0)
 		return (-1);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 18:23:31 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/26 01:15:02 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ long	get_abs_time(int mode)
 	sec = tv.tv_sec;
 	usec = tv.tv_usec;
 
-	if (mode == 1)
+	if (mode == SECOND)
 		time = sec + usec / (1000000);
-	else if (mode == 2)
+	else if (mode == MILLI)
 		time = sec * 1000 + usec / 1000;
-	else if (mode == 3)
+	else if (mode == MICRO)
 		time = sec * 1000000 + usec;
 	return (time);
 }
@@ -65,11 +65,11 @@ long	get_sim_time(int mode)
 	df = get_df();
 	sim_time = 0;
 	abs_start_time = 0;
-	if (mode == 1)			// sec
+	if (mode == SECOND)			// sec
 		abs_start_time = df->start_time / 1000000;
-	else if (mode == 2)		// ms
+	else if (mode == MILLI)		// ms
 		abs_start_time = df->start_time / 1000;
-	else if (mode == 3)		// us
+	else if (mode == MICRO)		// us
 		abs_start_time = df->start_time;
 	sim_time = get_abs_time(mode) - abs_start_time;
 	return (sim_time);
@@ -90,9 +90,9 @@ void	keep_time(void)
 	printf("sec:	%ld\n", sec);
 	printf("usec:	%ld\n", usec);
 
-	sec = get_abs_time(1);
-	msec = get_abs_time(2);
-	usec = get_abs_time(3);
+	sec = get_abs_time(SECOND);
+	msec = get_abs_time(MILLI);
+	usec = get_abs_time(MICRO);
 
 	printf("get_abs_time sec:	%ld\n", sec);
 	printf("get_abs_time msec:	%ld\n", msec);
