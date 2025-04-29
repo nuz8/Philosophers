@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/26 00:37:44 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/29 15:22:00 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ int		philo_think(t_df *df, t_phil *philo);
 
 /* ----------------------------- loggers.c ----------------------------- */
 
-void	log_event(t_phil *philo, e_phstates state);
+int		log_event(t_phil *philo, e_phstates state);
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 
@@ -230,6 +230,7 @@ int		set_long(t_mutex *mtx, long *destination, long put);
 // void	clear_out(t_df *df, int mode);
 void	clear_out(t_df *df);
 
+int	destroy_mutex_safely(t_mutex *mtx);		// to be removed
 
 /* ============================= test functions ============================= */
 
@@ -240,7 +241,7 @@ void	test_print_logs(void);
 void	test_print_mutex_errors(void);
 void	test_print_fork_owners();
 void	test_print_philo_presence(t_phil *philo);
-
+void	test_print_safe_mutex_destruction(t_mutex *mtx);
 
 int		test_get_int(t_mutex *mtx, int *source, t_phil *philo);
 void	keep_time(void);

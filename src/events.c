@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 12:14:07 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/29 15:22:16 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int		philo_eat(t_df *df, t_phil *philo);
 int		philo_sleep(t_df *df, t_phil *philo);
 int		philo_think(t_df *df, t_phil *philo);
 
-static int	philo_pickup_forks(t_df *df, t_phil *philo);
-static int	philo_drop_forks(t_df *df, t_phil *philo);
+static int	philo_pickup_forks(t_phil *philo);
+static int	philo_drop_forks(t_phil *philo);
 static void	update_fork(t_fork *fork, t_phil *philo, e_fstates state);
 
 /*
@@ -33,14 +33,10 @@ Function to simulate eating
 int	philo_eat(t_df *df, t_phil *philo)
 {	
 	// test_print_philo_presence(philo);
-	philo_pickup_forks(df, philo);
+	philo_pickup_forks(philo);
 	
-	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
+	if (log_event(philo, EATING) != 0)
 		return (-1);
-	log_event(philo, EATING);
-	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
-		return (-1);
-
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->mtx)) != 0)
 		return (-1);
 	philo->lastmeal_time = get_sim_time(MICRO);
@@ -50,30 +46,23 @@ int	philo_eat(t_df *df, t_phil *philo)
 	philo->state = -1;
 	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&philo->mtx)) != 0)
 		return (-1);
-
-	philo_drop_forks(df, philo);
+	philo_drop_forks(philo);
 	return (0);
 }
 
 // Function to lock fork mutexes and update fork states
-static int	philo_pickup_forks(t_df *df, t_phil *philo)
+static int	philo_pickup_forks(t_phil *philo)
 {
-	(void)df;
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork1->mtx)) != 0)
 		return (-1);
-	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
-		return (-1);
-	log_event(philo, TOOK_FORK_1);
-	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
+	// test_print_safe_mutex_destruction();	
+	if (log_event(philo, TOOK_FORK_1) != 0)
 		return (-1);
 	update_fork(philo->fork1, philo, TAKEN);
 	
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork2->mtx)) != 0)
 		return (-1);
-	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
-		return (-1);
-	log_event(philo, TOOK_FORK_2);
-	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
+	if (log_event(philo, TOOK_FORK_2) != 0)
 		return (-1);
 	update_fork(philo->fork2, philo, TAKEN);
 
@@ -82,9 +71,8 @@ static int	philo_pickup_forks(t_df *df, t_phil *philo)
 }
 
 // Function to unlock fork mutexes and update fork states
-static int	philo_drop_forks(t_df *df, t_phil *philo)
+static int	philo_drop_forks(t_phil *philo)
 {
-	(void)df;
 	update_fork(philo->fork1, philo, FREE);
 	if (print_mutex_error(UNLOCK,
 			pthread_mutex_unlock(&philo->fork1->mtx)) != 0)
@@ -96,6 +84,7 @@ static int	philo_drop_forks(t_df *df, t_phil *philo)
 	return (0);
 }
 
+// Enter Sandman
 int	philo_sleep(t_df *df, t_phil *philo)
 {
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
