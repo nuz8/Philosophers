@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:58:17 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 13:02:07 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/29 15:43:52 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	log_event(t_phil *philo, e_phstates state);
 
+int	log_event_unsafe(t_phil *philo, e_phstates state);
 
 /*
 Function to print logs for each event, indicating the current state of the
@@ -42,5 +43,21 @@ int	log_event(t_phil *philo, e_phstates state)
 		printf("%ld	"Y"%d "R"died"RST"\n", get_sim_time(MILLI), philo->id);
 	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
 		return (-1);
+	return (0);
+}
+
+// Same event logging fn as log_event but without mutex locks
+int	log_event_unsafe(t_phil *philo, e_phstates state)
+{
+	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
+		printf("%ld	"Y"%d "C"has taken a fork"RST"\n", get_sim_time(MILLI), philo->id);
+	else if (state == EATING)
+		printf("%ld	"Y"%d "G"is eating"RST"\n", get_sim_time(MILLI), philo->id);
+	else if (state == SLEEPING)
+		printf("%ld	"Y"%d "B"is sleeping"RST"\n", get_sim_time(MILLI), philo->id);
+	else if (state == THINKING)
+		printf("%ld	"Y"%d "W"is thinking"RST"\n", get_sim_time(MILLI), philo->id);
+	else if (state == DIED)
+		printf("%ld	"Y"%d "R"died"RST"\n", get_sim_time(MILLI), philo->id);
 	return (0);
 }

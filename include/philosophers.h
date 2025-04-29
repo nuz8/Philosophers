@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 15:22:00 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/29 15:44:08 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,6 +212,8 @@ int		philo_think(t_df *df, t_phil *philo);
 /* ----------------------------- loggers.c ----------------------------- */
 
 int		log_event(t_phil *philo, e_phstates state);
+
+int	log_event_unsafe(t_phil *philo, e_phstates state);
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 

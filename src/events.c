@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 15:22:16 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/29 15:44:40 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,12 +87,8 @@ static int	philo_drop_forks(t_phil *philo)
 // Enter Sandman
 int	philo_sleep(t_df *df, t_phil *philo)
 {
-	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
+	if (log_event_unsafe(philo, SLEEPING) < 0)
 		return (-1);
-	log_event(philo, SLEEPING);
-	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
-		return (-1);
-	
 	philo->state = SLEEPING;
 	usleep(df->tts);
 	philo->state = -1;
@@ -101,10 +97,8 @@ int	philo_sleep(t_df *df, t_phil *philo)
 
 int	philo_think(t_df *df, t_phil *philo)
 {
-	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx)) != 0)
-		return (-1);
-	log_event(philo, THINKING);
-	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx)) != 0)
+	(void)df;
+	if (log_event_unsafe(philo, THINKING) < 0)
 		return (-1);
 	return (0);
 }

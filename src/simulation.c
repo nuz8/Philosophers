@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 12:19:12 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/29 15:40:25 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int	start_simulation(t_df *df)
 	}
 	if (pthread_create(&df->manager, NULL, supervise, df) < 0)
 		return (-1);
-
+	
+	usleep(2000);
 	test_print_fork_owners();	// TPF
 	
 	i = -1;
