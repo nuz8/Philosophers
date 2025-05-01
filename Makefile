@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/04/26 01:06:46 by pamatya          ###   ########.fr        #
+#    Updated: 2025/04/30 00:57:24 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,7 +59,7 @@ DEP			= 	$(OBJ:.o=.d)
 
 # ----------------- Target Binary ----------------- #
 NAME		=	philo
-ARGS		=	5 200 200 200
+ARGS		=	3 800 200 200 2
 
 # ----------------- Headers Flag ----------------- #
 HEADS_FLG	=	-I$(D_INC)
@@ -136,7 +136,7 @@ re: fclean all
 valgrind: $(NAME)
 	@valgrind $(VALGRIND_OPTS) ./$(NAME) $(ARGS)
 
-mutex: $(NAME)
+helgrind: $(NAME)
 	@valgrind $(HELGRIND_OPTS) ./$(NAME) $(ARGS)
 
 format:

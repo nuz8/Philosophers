@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 15:44:08 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/30 01:08:05 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,9 @@ typedef struct	s_df
 	t_fork		*forks;			// pointer to the array of forks
 	t_phil		*philos;		// pointer to the array of philosophers
 	t_mutex		mtx;			// dataframe mutex
+	t_mutex		mtx_write;		// mutex for only writing logs
 	bool		mtx_init;		// flag for initialization status of the mutex mtx
+	bool		mtx_write_init;	// boolean flag to indicate mtx_write was initialized
 	pthread_t	manager;		// manager is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
 	int			turn;
 	long		start_time;		// time of start of the simulation in microseconds

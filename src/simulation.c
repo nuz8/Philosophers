@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 15:40:25 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/30 00:42:14 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,15 @@ int	start_simulation(t_df *df)
 	
 	i = -1;
 	while (++i < df->total_philos)
-		if (pthread_join((philos + i)->th_id, NULL) < 0)
+	{
+		if (pthread_join((philos + i)->th_id, NULL) == 0)
+			printf(M"%ld\t\t\t%d is joining.\n"RST, get_sim_time(MILLI), (philos + i)->id);
+		else
 			return (-1);
+		// if (pthread_join((philos + i)->th_id, NULL) < 0)
+		// 	return (-1);
+	}
+	printf(M"%ld\t\t\tManager thread is joining.\n"RST, get_sim_time(MILLI));
 	if (pthread_join(df->manager, NULL) < 0)
 		return (-1);
 	return (0);
@@ -91,8 +98,7 @@ static void	*start_dining(void *arg)
 	
 	df = get_df();
 	philo = (t_phil *)arg;
-	
-	
+
 	// test_print_philo_presence(philo);	// TPF
 	
 	// while (get_int(&philo->mtx, &philo->meals_left) > 0)
@@ -103,7 +109,9 @@ static void	*start_dining(void *arg)
 		philo_sleep(df, philo);
 		philo_think(df, philo);
 	}
+	
 
+	printf(M"%ld\t\t\t%d is exiting.\n"RST, get_sim_time(MILLI), philo->id);
 	return (NULL);
 }
 
@@ -121,7 +129,7 @@ static void	*supervise(void *arg)
 	int		i;
 	
 	df = (t_df *)arg;
-	while (1)
+	while (!df->sim_finished)
 	{
 		philos_full = 0;
 		i = -1;
@@ -131,22 +139,25 @@ static void	*supervise(void *arg)
 			pthread_mutex_lock(&((df->philos + i)->mtx));
 			if ((df->philos + i)->dead == true)
 			{
-				print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx));
 				log_event((df->philos + i), DIED);
-				print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx));
 				df->sim_finished = true;
 				pthread_mutex_unlock(&((df->philos + i)->mtx));
 				break ;
+				// printf("%ld\tManager exitin.\n", get_sim_time(MILLI));
 			}
-			if ((df->philos + i)->meals_left == 0)
+			// if ((df->philos + i)->meals_left == 0)
+			// 	philos_full++;
+			if (get_int(&(df->philos + i)->mtx, &(df->philos + i)->meals_left) == 0)
 				philos_full++;
 			pthread_mutex_unlock(&((df->philos + i)->mtx));
 		}
 		if (philos_full == df->total_philos)
 			df->sim_finished = true;	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
-		if (df->sim_finished == true)	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
-			break ;
+		// if (df->sim_finished == true)	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
+		// 	break ;
 	}
+	
+	printf(M"%ld\t\t\tManager thread is exiting.\n"RST, get_sim_time(MILLI));
 	return (NULL);
 }
 

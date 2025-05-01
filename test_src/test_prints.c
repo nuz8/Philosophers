@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/29 15:21:54 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/04/30 01:01:27 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,11 @@ void	test_print_fork_owners()
 	i = -1;
 	while (++i < df->total_philos)
 	{
-		printf("Fork "G"%d"RST" is with Philo "Y"%d\n"RST, (df->forks + i)->id,
+		// printf("Fork "G"%d"RST" is with Philo "Y"%d\n"RST, (df->forks + i)->id,
+		// 	(df->forks + i)->taker_id);
+		// printf("%ld\tFork "G"%d"RST" is with Philo "Y"%d\n"RST, get_sim_time(MILLI), (df->forks + i)->id,
+		// 	(df->forks + i)->taker_id);
+		printf("%ld\tFork %d is with Philo %d\n", get_sim_time(MILLI), (df->forks + i)->id,
 			(df->forks + i)->taker_id);
 	}
 }
