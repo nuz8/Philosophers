@@ -1,6 +1,6 @@
 .DS_Store
-# lib/
-# obj/
+lib/
+obj/
 philo
 .gitignore
 .vscode/
