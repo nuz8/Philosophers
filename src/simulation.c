@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/30 00:42:14 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/01 19:31:40 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 int			start_simulation(t_df *df);
 
 static void	*start_dining(void *arg);
-static void	*supervise(void *arg);
+// static void	*supervise(void *arg);
 
 // static int	update_philo_deaths(t_df *df);
-static int	update_philo_death(t_df *df, t_phil *philo);
+// static int	update_philo_death(t_df *df, t_phil *philo);
 
 /*
 Function to start the dining philosophers simulation
@@ -42,25 +42,26 @@ int	start_simulation(t_df *df)
 				(philos + i)) < 0)
 			return (-1);
 	}
-	if (pthread_create(&df->manager, NULL, supervise, df) < 0)
-		return (-1);
+	// if (pthread_create(&df->manager, NULL, supervise, df) < 0)
+	// 	return (-1);
 	
 	usleep(2000);
-	test_print_fork_owners();	// TPF
+	printf("Printing fork owners now...\n");
+	// test_print_fork_owners();					// TPF
 	
 	i = -1;
 	while (++i < df->total_philos)
 	{
 		if (pthread_join((philos + i)->th_id, NULL) == 0)
-			printf(M"%ld\t\t\t%d is joining.\n"RST, get_sim_time(MILLI), (philos + i)->id);
+			printf(M"%ld\t\t\t%d is joining.\t\tMain thread\n"RST, get_sim_time(MILLI), (philos + i)->id);
 		else
 			return (-1);
 		// if (pthread_join((philos + i)->th_id, NULL) < 0)
 		// 	return (-1);
 	}
-	printf(M"%ld\t\t\tManager thread is joining.\n"RST, get_sim_time(MILLI));
-	if (pthread_join(df->manager, NULL) < 0)
-		return (-1);
+	// printf(M"%ld\t\t\tManager thread is joining.\t\tMain thread\n"RST, get_sim_time(MILLI));
+	// if (pthread_join(df->manager, NULL) < 0)
+	// 	return (-1);
 	return (0);
 }
 
@@ -98,13 +99,10 @@ static void	*start_dining(void *arg)
 	
 	df = get_df();
 	philo = (t_phil *)arg;
-
-	// test_print_philo_presence(philo);	// TPF
 	
 	// while (get_int(&philo->mtx, &philo->meals_left) > 0)
 	while (!df->sim_finished)
 	{
-		// test_print_philo_presence(philo);	// TPF
 		philo_eat(df, philo);
 		philo_sleep(df, philo);
 		philo_think(df, philo);
@@ -122,44 +120,44 @@ Possible data-races info:
 	Accessed philo-fields: philos->	(dead, meals_left)
 	Accessed df-fields:		df->	(total_philos, max_meals, sim_finished)
 */
-static void	*supervise(void *arg)
-{
-	t_df	*df;
-	int		philos_full;
-	int		i;
+// static void	*supervise(void *arg)
+// {
+// 	t_df	*df;
+// 	int		philos_full;
+// 	int		i;
 	
-	df = (t_df *)arg;
-	while (!df->sim_finished)
-	{
-		philos_full = 0;
-		i = -1;
-		while (++i < df->total_philos)
-		{
-			update_philo_death(df, df->philos + i);
-			pthread_mutex_lock(&((df->philos + i)->mtx));
-			if ((df->philos + i)->dead == true)
-			{
-				log_event((df->philos + i), DIED);
-				df->sim_finished = true;
-				pthread_mutex_unlock(&((df->philos + i)->mtx));
-				break ;
-				// printf("%ld\tManager exitin.\n", get_sim_time(MILLI));
-			}
-			// if ((df->philos + i)->meals_left == 0)
-			// 	philos_full++;
-			if (get_int(&(df->philos + i)->mtx, &(df->philos + i)->meals_left) == 0)
-				philos_full++;
-			pthread_mutex_unlock(&((df->philos + i)->mtx));
-		}
-		if (philos_full == df->total_philos)
-			df->sim_finished = true;	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
-		// if (df->sim_finished == true)	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
-		// 	break ;
-	}
+// 	df = (t_df *)arg;
+// 	while (!df->sim_finished)
+// 	{
+// 		philos_full = 0;
+// 		i = -1;
+// 		while (++i < df->total_philos)
+// 		{
+// 			update_philo_death(df, df->philos + i);
+// 			pthread_mutex_lock(&((df->philos + i)->mtx));
+// 			if ((df->philos + i)->dead == true)
+// 			{
+// 				log_event((df->philos + i), DIED);
+// 				df->sim_finished = true;
+// 				pthread_mutex_unlock(&((df->philos + i)->mtx));
+// 				break ;
+// 			}
+// 			// if ((df->philos + i)->meals_left == 0)
+// 			// 	philos_full++;
+// 			if (get_int(&(df->philos + i)->mtx, &(df->philos + i)->meals_left) == 0)
+// 				philos_full++;
+			
+// 			pthread_mutex_unlock(&((df->philos + i)->mtx));
+// 		}
+// 		if (philos_full == df->total_philos)
+// 			df->sim_finished = true;	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
+// 		// if (df->sim_finished == true)	// neeed to protect these as philos, though they never update this value, they do have to access it for the checks they make during the sim
+// 		// 	break ;
+// 	}
 	
-	printf(M"%ld\t\t\tManager thread is exiting.\n"RST, get_sim_time(MILLI));
-	return (NULL);
-}
+// 	printf(M"%ld\t\t\tManager thread is exiting.\n"RST, get_sim_time(MILLI));
+// 	return (NULL);
+// }
 
 // static int	update_philo_deaths(t_df *df)
 // {
@@ -183,17 +181,17 @@ static void	*supervise(void *arg)
 // 	return (0);
 // }
 
-static int	update_philo_death(t_df *df, t_phil *philo)
-{
-	long	time_without_food;
+// static int	update_philo_death(t_df *df, t_phil *philo)
+// {
+// 	long	time_without_food;
 
-	time_without_food = 0;
-	if (get_int(&philo->mtx, &philo->meals_left) > 0)
-	{
-		time_without_food = get_sim_time(MICRO) - get_long(&philo->mtx,
-				&philo->lastmeal_time);
-		if (time_without_food > df->ttd)	// protect? maybe not...
-			set_bool(&philo->mtx, &philo->dead, true);
-	}
-	return (0);
-}
+// 	time_without_food = 0;
+// 	if (get_int(&philo->mtx, &philo->meals_left) > 0)
+// 	{
+// 		time_without_food = get_sim_time(MICRO) - get_long(&philo->mtx,
+// 				&philo->lastmeal_time);
+// 		if (time_without_food > df->ttd)	// protect? maybe not...
+// 			set_bool(&philo->mtx, &philo->dead, true);
+// 	}
+// 	return (0);
+// }

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/30 23:16:25 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/01 19:42:12 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,14 @@ int	philo_eat(t_df *df, t_phil *philo)
 	philo_pickup_forks(philo);
 	if (log_event(philo, EATING) != 0)
 		return (-1);
-	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->mtx)) != 0)
-		return (-1);
-	printf("Its stuck here on philo no. %d\n", philo->id);
-	philo->lastmeal_time = get_sim_time(MICRO);
-	philo->state = EATING;
-	usleep(df->tte);
-	// philo->meals_left--;
+	// printf("Its stuck here on philo no. %d\n", philo->id);
+	
+	set_long(&philo->mtx, &philo->lastmeal_time, get_sim_time(MICRO));
+	set_int(&philo->mtx, &philo->state, EATING);
+	ft_usleep(df->tte);
 	set_int(&philo->mtx, &philo->meals_left, DECREASE);
-	philo->state = -1;
-	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&philo->mtx)) != 0)
-		return (-1);
+	set_int(&philo->mtx, &philo->state, -1);
+	
 	philo_drop_forks(philo);
 	return (0);
 }
@@ -56,18 +53,22 @@ static int	philo_pickup_forks(t_phil *philo)
 {
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork1->mtx)) != 0)
 		return (-1);
-	// test_print_safe_mutex_destruction();	
+	
+	// test_print_safe_mutex_destruction();				// TPF
+		
 	// if (log_event(philo, TOOK_FORK_1) != 0)
 	// 	return (-1);
-	update_fork(philo->fork1, philo, TAKEN);
 	
+	// test_print_fork_owners();					// TPF
+	
+	update_fork(philo->fork1, philo, TAKEN);
+
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork2->mtx)) != 0)
 		return (-1);
 	// if (log_event(philo, TOOK_FORK_2) != 0)
 	// 	return (-1);
 	update_fork(philo->fork2, philo, TAKEN);
 
-	// test_print_philo_presence(philo);	// TPF
 	return (0);
 }
 
@@ -91,7 +92,7 @@ int	philo_sleep(t_df *df, t_phil *philo)
 	if (log_event(philo, SLEEPING) < 0)
 		return (-1);
 	philo->state = SLEEPING;
-	usleep(df->tts);
+	ft_usleep(df->tts);
 	philo->state = -1;
 	return (0);
 }

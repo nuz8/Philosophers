@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/26 01:15:02 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/01 20:21:14 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 long	get_abs_time(int mode);
 long	get_sim_time(int mode);
+int		ft_usleep(long	tts_usec);
+
 
 void	keep_time();
 
@@ -75,7 +77,6 @@ long	get_sim_time(int mode)
 	return (sim_time);
 }
 
-
 // Test function for gettimeofday() fn
 void	keep_time(void)
 {
@@ -97,4 +98,22 @@ void	keep_time(void)
 	printf("get_abs_time sec:	%ld\n", sec);
 	printf("get_abs_time msec:	%ld\n", msec);
 	printf("get_abs_time usec:	%ld\n", usec);
+}
+
+int	ft_usleep(long	tts_usec)
+{
+	long	cur_time;
+	long	rem_tts_usec;
+
+	cur_time = get_sim_time(MICRO);
+	if (usleep(0.5 * tts_usec) < 0)
+		return (print_errstr("usleep failed\n"), -1);
+	rem_tts_usec = 0.5 * tts_usec;
+	while (rem_tts_usec > 1)
+	{
+		if (usleep(rem_tts_usec / 2) < 0)
+			return (print_errstr("usleep failed\n"), -1);
+		rem_tts_usec = rem_tts_usec / 2;
+	}
+	return (0);
 }

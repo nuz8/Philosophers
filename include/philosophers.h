@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/30 01:08:05 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/01 19:44:24 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ int		parse_arguments(int ac, char **av, t_df *df);
 
 long	get_abs_time(int mode);
 long	get_sim_time(int mode);
+int		ft_usleep(long	tts_usec);
 
 /* ----------------------------- simulation.c ----------------------------- */
 
@@ -215,7 +216,7 @@ int		philo_think(t_df *df, t_phil *philo);
 
 int		log_event(t_phil *philo, e_phstates state);
 
-int	log_event_unsafe(t_phil *philo, e_phstates state);
+int	log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 
@@ -251,4 +252,3 @@ int		test_get_int(t_mutex *mtx, int *source, t_phil *philo);
 void	keep_time(void);
 
 #endif
-

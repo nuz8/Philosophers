@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:46:44 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/30 01:06:22 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/01 18:30:16 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	clear_out(t_df *df);
 
-int		destroy_mutex_safely(t_mutex *mtx);	// to be removed
+int		destroy_mutex_safely(t_mutex *mtx);	// to be removed because to be made static later on; only here for the test_print fn
 
 static void	clear_philos(t_df *df);
 static void	clear_forks(t_df *df);

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/30 01:01:27 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/01 18:01:24 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,23 +93,42 @@ void	test_print_mutex_errors()
 	print_mutex_error(DESTROY, EBUSY);
 }
 
+// Test fn to print the fork owners in the order that they were acquired
 void	test_print_fork_owners()
 {
 	t_df	*df;
 	int		i;
+	int		printed;
+	int		*indicator;
 
 	df = get_df();
 	
+	indicator = malloc(df->total_philos * sizeof(int));
+	if (!indicator)
+		return ;
+
+	printed = 0;
 	i = -1;
 	while (++i < df->total_philos)
+		indicator[i] = 0;
+
+	i = -1;
+	while (++i < df->total_philos && printed != df->total_philos)
 	{
-		// printf("Fork "G"%d"RST" is with Philo "Y"%d\n"RST, (df->forks + i)->id,
-		// 	(df->forks + i)->taker_id);
-		// printf("%ld\tFork "G"%d"RST" is with Philo "Y"%d\n"RST, get_sim_time(MILLI), (df->forks + i)->id,
-		// 	(df->forks + i)->taker_id);
-		printf("%ld\tFork %d is with Philo %d\n", get_sim_time(MILLI), (df->forks + i)->id,
-			(df->forks + i)->taker_id);
+		// if ((df->forks + i)->id != 0 && indicator[i] == 0)
+		if (indicator[i] == 0 && get_int(&(df->forks + i)->mtx, &(df->forks + i)->id) != 0)
+		{
+			printf("%ld\tFork "G"%d"RST" is with Philo "Y"%d\n"RST, get_sim_time(MILLI), (df->forks + i)->id,
+				(df->forks + i)->taker_id);
+			// printf("%ld\tFork %d is with Philo %d\n", get_sim_time(MILLI), (df->forks + i)->id,
+			// 	(df->forks + i)->taker_id);
+			printed++;
+			indicator[i] = 1;
+		}
+		if (i >= (df->total_philos - 1) && printed != df->total_philos)
+			i = -1;
 	}
+	free(indicator);
 }
 
 void	test_print_philo_presence(t_phil *philo)
