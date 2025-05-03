@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/02 21:38:28 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/03 22:42:31 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,8 @@ int	start_simulation(t_df *df)
 	if (pthread_create(&df->manager, NULL, supervise, df) < 0)
 		return (-1);
 
-	// usleep(2000);
-	// printf("Printing fork owners now...\n");
-	// test_print_fork_owners();					// TPF
-
+	
+	
 	i = -1;
 	while (++i < df->total_philos)
 	{
@@ -77,14 +75,17 @@ static void	*start_dining(void *arg)
 	philo = (t_phil *)arg;
 
 	// while (get_int(&philo->mtx, &philo->meals_left) > 0)
-	while (!get_bool(&df->mtx, &df->sim_finished))
+	while (!get_bool(&df->mtx, &df->sim_finished) && get_bool(&philo->mtx, &philo->full) == false)
 	{
-		philo_eat(df, philo);
-		if (get_bool(&philo->mtx, &philo->full) == true)
+		if (philo_should_exit(df, philo, BOTH))
+			break ;
+		if (philo_eat(df, philo) < 0)
 			break ;
 		switch_turns(df, philo);
-		philo_sleep(df, philo);
-		philo_think(df, philo);
+		if (philo_sleep(df, philo) < 0)
+			break ;
+		if (philo_think(df, philo) < 0)
+			break ;
 	}
 	// printf(M"%ld\t\t\t%d is exiting.\n"RST, get_sim_time(MILLI), philo->id);
 	return (NULL);
@@ -165,10 +166,10 @@ static void	*supervise(void *arg)
 	// while (++i < df->total_philos)
 	// 	full_array[i] = 0;
 	
-	
+	philos_full = 0;
 	while (!get_bool(&df->mtx, &df->sim_finished))
 	{
-		philos_full = 0;
+		// philos_full = 0;
 		i = -1;
 		while (++i < df->total_philos && !get_bool(&df->mtx, &df->sim_finished))
 		{
@@ -182,7 +183,7 @@ static void	*supervise(void *arg)
 			if (get_int(&(df->philos + i)->mtx, &(df->philos + i)->meals_left) == 0)
 			{
 				philos_full++;
-				// printf("\t\t\t"M"No. of satisfied philos = %d\n"RST, philos_full);
+				// printf("\t\t\t\t"M"Philo %d is full.\n"RST, (df->philos + i)->id);
 			}
 		}
 		if (philos_full == df->total_philos)
@@ -191,8 +192,6 @@ static void	*supervise(void *arg)
 			printf("Exiting by all philos being full.\n");
 		}
 	}
-	
-	
 	printf(M"%ld\t\t\t\tManager thread is exiting.\n"RST, get_sim_time(MILLI));
 	return (NULL);
 }
@@ -210,7 +209,7 @@ static int	update_philo_death(t_df *df, t_phil *philo)
 	{
 		time_without_food = get_sim_time(MICRO) - get_long(&philo->mtx,
 				&philo->lastmeal_time);
-		if (time_without_food > df->ttd)	// protect? maybe not...
+		if (get_bool(&philo->mtx, &philo->full) == false && time_without_food > df->ttd)	// protect? maybe not...
 			set_bool(&philo->mtx, &philo->dead, true);
 	}
 	return (0);

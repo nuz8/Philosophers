@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/02 21:12:18 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/03 22:40:09 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ RST is to reset the colour after changing it...should be used everytime
 
 # define INCREASE -10
 # define DECREASE -20
+# define PHILO_FULL -299
+# define SIM_ENDED -399
+# define SIM_COMPLETED -499
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -114,6 +117,13 @@ typedef enum	e_mtx_op
 	UNLOCK,
 	DESTROY
 }				e_mtx_op;
+
+typedef	enum	e_check
+{
+	PHILO,
+	SIMULATION,
+	BOTH,
+}				e_check;
 
 /* ==================== enums ==================== */
 
@@ -214,6 +224,7 @@ int		start_simulation(t_df *df);
 int		philo_eat(t_df *df, t_phil *philo);
 int		philo_sleep(t_df *df, t_phil *philo);
 int		philo_think(t_df *df, t_phil *philo);
+bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
 
 /* ----------------------------- loggers.c ----------------------------- */
 

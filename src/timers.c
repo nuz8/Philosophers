@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/02 20:49:48 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/03 20:53:47 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,50 +98,54 @@ Custom usleep fn			// Need to remove the type variable later
 	- if type = 0, then uses built-in usleep
 	- if type = 1, then uses custom usleep
 */
-int	ft_usleep(long	tts_usec)
-{
-	int	type;
-	type = 1;
-	
-	if (type == 0)
-		usleep(tts_usec);
-	else
-	{
-		t_df	*df;
-		long	start_time;
-	
-		df = get_df();
-		start_time = get_abs_time(MICRO);
-		usleep(0.5 * tts_usec);
-		while (get_abs_time(MICRO) < start_time + tts_usec)
-		{
-			if (get_bool(&df->mtx, &df->sim_finished))
-				break ;
-			usleep (40);	
-		}	
-	}
-	return (0);
-}
-
-// int	ft_usleep(long tts_usec)
+// int	ft_usleep(long	tts_usec)
 // {
-// 	long	start_time;
-// 	long	time_passed;
-// 	long	rem_tts;
-
-// 	start_time = get_abs_time(MICRO);
-// 	while (get_abs_time(MICRO) < start_time + tts_usec)
+// 	int	type;
+// 	type = 1;
+	
+// 	if (type == 0)
+// 		usleep(tts_usec);
+// 	else
 // 	{
-// 		time_passed = get_abs_time(MICRO) - start_time;
-// 		rem_tts = tts_usec - time_passed;
-		
-// 		if (rem_tts > 100)
-// 			usleep(rem_tts);
-// 		else
+// 		t_df	*df;
+// 		long	start_time;
+	
+// 		df = get_df();
+// 		start_time = get_abs_time(MICRO);
+// 		usleep(0.5 * tts_usec);
+// 		while (get_abs_time(MICRO) < start_time + tts_usec)
 // 		{
-// 			while (start_time + tts_usec > get_abs_time(MICRO))
-// 				continue ;
-// 		}
+// 			if (get_bool(&df->mtx, &df->sim_finished))
+// 				break ;
+// 			usleep (40);	
+// 		}	
 // 	}
 // 	return (0);
 // }
+
+int	ft_usleep(long tts_usec)
+{
+	long	start_time;
+	long	time_passed;
+	long	rem_tts;
+	t_df	*df;
+
+	df = get_df();
+	start_time = get_abs_time(MICRO);
+	while (get_abs_time(MICRO) < start_time + tts_usec)
+	{
+		if (get_bool(&df->mtx, &df->sim_finished) == true)
+			break ;
+		time_passed = get_abs_time(MICRO) - start_time;
+		rem_tts = tts_usec - time_passed;
+
+		if (rem_tts > 100)
+			usleep(rem_tts);
+		else
+		{
+			while (start_time + tts_usec > get_abs_time(MICRO))
+				continue ;
+		}
+	}
+	return (0);
+}
