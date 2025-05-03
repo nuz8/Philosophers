@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:46:44 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/01 18:30:16 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/02 16:22:38 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void	clear_out(t_df *df)
 		destroy_mutex_safely(&df->mtx);
 	if (df->mtx_write_init == true)
 		destroy_mutex_safely(&df->mtx_write);
+	if (df->mtx_turn_init == true)
+		destroy_mutex_safely(&df->mtx_turn);
 	if (df)
 		free(df);
 }

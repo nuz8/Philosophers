@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/30 01:05:10 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/02 21:17:12 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ int	init_df(int ac, char **av)
 	if (pthread_mutex_init(&df->mtx_write, NULL) < 0)			// TODO: error codes
 		return (-1);
 	df->mtx_write_init = true;
+	if (pthread_mutex_init(&df->mtx_turn, NULL) < 0)			// TODO: error codes
+		return (-1);
+	df->mtx_turn_init = true;
 	df->start_time = get_abs_time(MICRO);		// maybe this should only be assigned at the start of the simulation
 	if (df->start_time < 0)
 		return (-1);
@@ -86,12 +89,8 @@ int	init_philos(t_df *df)
 		if (pthread_mutex_init(&(df->philos + i)->mtx, NULL) < 0)
 			return (-1);
 		(df->philos + i)->mtx_init = true;
-		if (i == df->total_philos - 1)
-			(df->philos + i)->last_philo = true;
 		tag_forks(df->philos + i);
 		(df->philos + i)->meals_left = df->max_meals;
-		if (i + 1 == df->total_philos)
-			df->philos->last_philo = true;
 	}
 	return (0);
 }

@@ -6,13 +6,14 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/01 18:01:24 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/02 20:09:33 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
 void	test_print_elements(void);
+void	keep_time(void);
 void	test_print_time(void);
 void	test_print_fork_tags();
 void	test_print_logs();
@@ -33,6 +34,29 @@ void	test_print_elements(void)
 	printf("time to sleep:	%ld\n", df->tts);
 	printf("maximum meals:	%ld\n", df->max_meals);
 
+}
+
+// Test function for gettimeofday() fn
+void	keep_time(void)
+{
+	struct timeval	tv;
+	long			sec;
+	long			msec;
+	long			usec;
+
+	gettimeofday(&tv, NULL);
+	sec = tv.tv_sec;
+	usec = tv.tv_usec;
+	printf("sec:	%ld\n", sec);
+	printf("usec:	%ld\n", usec);
+
+	sec = get_abs_time(SECOND);
+	msec = get_abs_time(MILLI);
+	usec = get_abs_time(MICRO);
+
+	printf("get_abs_time sec:	%ld\n", sec);
+	printf("get_abs_time msec:	%ld\n", msec);
+	printf("get_abs_time usec:	%ld\n", usec);
 }
 
 void	test_print_time(void)
@@ -79,7 +103,7 @@ void	test_print_logs()
 	while (++i < 500000)
 	{
 		// printf("i = %d:\t", i);
-		log_event(philos + (i % df->total_philos), i % 6);
+		log_event_safe_debug(philos + (i % df->total_philos), i % 6);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/01 20:21:14 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/02 20:49:48 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ long	get_abs_time(int mode);
 long	get_sim_time(int mode);
 int		ft_usleep(long	tts_usec);
 
-
-void	keep_time();
 
 /*
 Function to get the time in sec, millisecond, or microsecond based on the value
@@ -77,43 +75,73 @@ long	get_sim_time(int mode)
 	return (sim_time);
 }
 
-// Test function for gettimeofday() fn
-void	keep_time(void)
-{
-	struct timeval	tv;
-	long			sec;
-	long			msec;
-	long			usec;
+// int	ft_usleep(long	tts_usec)
+// {
+// 	long	cur_time;
+// 	long	rem_tts_usec;
 
-	gettimeofday(&tv, NULL);
-	sec = tv.tv_sec;
-	usec = tv.tv_usec;
-	printf("sec:	%ld\n", sec);
-	printf("usec:	%ld\n", usec);
+// 	cur_time = get_sim_time(MICRO);
+// 	if (usleep(0.5 * tts_usec) < 0)
+// 		return (print_errstr("usleep failed\n"), -1);
+// 	rem_tts_usec = 0.5 * tts_usec;
+// 	while (rem_tts_usec > 1)
+// 	{
+// 		if (usleep(rem_tts_usec / 2) < 0)
+// 			return (print_errstr("usleep failed\n"), -1);
+// 		rem_tts_usec = rem_tts_usec / 2;
+// 	}
+// 	return (0);
+// }
 
-	sec = get_abs_time(SECOND);
-	msec = get_abs_time(MILLI);
-	usec = get_abs_time(MICRO);
-
-	printf("get_abs_time sec:	%ld\n", sec);
-	printf("get_abs_time msec:	%ld\n", msec);
-	printf("get_abs_time usec:	%ld\n", usec);
-}
-
+/*
+Custom usleep fn			// Need to remove the type variable later
+	- if type = 0, then uses built-in usleep
+	- if type = 1, then uses custom usleep
+*/
 int	ft_usleep(long	tts_usec)
 {
-	long	cur_time;
-	long	rem_tts_usec;
-
-	cur_time = get_sim_time(MICRO);
-	if (usleep(0.5 * tts_usec) < 0)
-		return (print_errstr("usleep failed\n"), -1);
-	rem_tts_usec = 0.5 * tts_usec;
-	while (rem_tts_usec > 1)
+	int	type;
+	type = 1;
+	
+	if (type == 0)
+		usleep(tts_usec);
+	else
 	{
-		if (usleep(rem_tts_usec / 2) < 0)
-			return (print_errstr("usleep failed\n"), -1);
-		rem_tts_usec = rem_tts_usec / 2;
+		t_df	*df;
+		long	start_time;
+	
+		df = get_df();
+		start_time = get_abs_time(MICRO);
+		usleep(0.5 * tts_usec);
+		while (get_abs_time(MICRO) < start_time + tts_usec)
+		{
+			if (get_bool(&df->mtx, &df->sim_finished))
+				break ;
+			usleep (40);	
+		}	
 	}
 	return (0);
 }
+
+// int	ft_usleep(long tts_usec)
+// {
+// 	long	start_time;
+// 	long	time_passed;
+// 	long	rem_tts;
+
+// 	start_time = get_abs_time(MICRO);
+// 	while (get_abs_time(MICRO) < start_time + tts_usec)
+// 	{
+// 		time_passed = get_abs_time(MICRO) - start_time;
+// 		rem_tts = tts_usec - time_passed;
+		
+// 		if (rem_tts > 100)
+// 			usleep(rem_tts);
+// 		else
+// 		{
+// 			while (start_time + tts_usec > get_abs_time(MICRO))
+// 				continue ;
+// 		}
+// 	}
+// 	return (0);
+// }

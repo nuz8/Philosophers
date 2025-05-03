@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/01 19:44:24 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/02 21:12:18 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ typedef enum	e_units
 
 typedef enum	e_turn
 {
-	ODD_PHILOS,
-	EVEN_PHILOS
+	EVEN_PHILOS,
+	ODD_PHILOS
 }				e_turn;
 
 // Enum type for mutex operations
@@ -138,7 +138,8 @@ typedef struct	s_phil
 	t_fork		*fork2;			// pointer to the second fork
 	int			meals_left;		// keep count of the number of times the philo has eaten
 	long		lastmeal_time;	// time stamp when the philosopher last ate
-	bool		last_philo;		// 1 if it is the last phil in the round-table
+	bool		full
+	;		// 1 if it is the last phil in the round-table
 	bool		dead;
 }				t_phil;
 
@@ -159,11 +160,13 @@ typedef struct	s_df
 	bool		mtx_write_init;	// boolean flag to indicate mtx_write was initialized
 	pthread_t	manager;		// manager is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
 	int			turn;
+	t_mutex		mtx_turn;
+	bool		mtx_turn_init;
 	long		start_time;		// time of start of the simulation in microseconds
 	bool		sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
 }				t_df;
 
-/* ========================= structs ========================= */
+/* ================================ structs ================================ */
 
 
 /* -------------------------- function prototypes -------------------------- */
@@ -214,13 +217,14 @@ int		philo_think(t_df *df, t_phil *philo);
 
 /* ----------------------------- loggers.c ----------------------------- */
 
-int		log_event(t_phil *philo, e_phstates state);
+int		log_event_safe_debug(t_phil *philo, e_phstates state);
 
-int	log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
+int		log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 
-int		get_bool(t_mutex *mtx, bool *source, bool *fetch);	// destination and put for the setter function
+// int		get_bool(t_mutex *mtx, bool *source, bool *fetch);
+bool	get_bool(t_mutex *mtx, bool *source);	// destination and put for the setter function
 int		get_int(t_mutex *mtx, int *source);
 long	get_long(t_mutex *mtx, long *source);
 

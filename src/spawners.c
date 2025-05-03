@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 01:09:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/01 17:13:11 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/02 21:14:01 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_df	*get_df(void)
 			df->mtx_init = false;
 			df->mtx_write_init = false;
 			df->turn = ODD_PHILOS;
+			df->mtx_turn_init = false;
 			df->sim_finished = false;
 		}
 	}
@@ -49,7 +50,7 @@ void	spawn_philo(t_phil *philo)
 		.state = -1,
 		.fork1 = NULL,
 		.fork2 = NULL,
-		.last_philo = false,
+		.full = false,
 		.dead = false
 	};
 }
