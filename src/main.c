@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/03 20:47:19 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/03 23:37:13 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,9 @@ int	main(int ac, char **av)
 	df = get_df();
 	if (!df)
 		return (print_errstr(ERR_MALLOC), -1);
-
+	
 	if (init_df(ac, av) != 0)
 		return (clear_out(df), 2);
-	
 	// Simulation code here; TODO:
 	// 1. Tag forks in each philo
 	//		to indicate which forks each philo is allowed to pick up or has access to

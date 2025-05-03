@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/03 22:40:09 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 00:57:53 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ int		parse_arguments(int ac, char **av, t_df *df);
 
 long	get_abs_time(int mode);
 long	get_sim_time(int mode);
-int		ft_usleep(long	tts_usec);
+int		ft_usleep(long start_time, long tts_usec);
 
 /* ----------------------------- simulation.c ----------------------------- */
 

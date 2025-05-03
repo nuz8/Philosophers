@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/03 22:42:31 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 00:27:57 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int			start_simulation(t_df *df);
 
 static void	*start_dining(void *arg);
-static void	switch_turns(t_df *df, t_phil *philo);
+// static void	switch_turns(t_df *df, t_phil *philo);
 static void	*supervise(void *arg);
 static int	update_philo_death(t_df *df, t_phil *philo);
 // static int	update_philo_deaths(t_df *df);
@@ -36,6 +36,7 @@ int	start_simulation(t_df *df)
 
 	i = -1;
 	philos = df->philos;
+	df->start_time = get_abs_time(MICRO);		// maybe this should only be assigned at the start of the simulation
 	while (++i < df->total_philos)
 	{
 		if (pthread_create(&(philos + i)->th_id, NULL, start_dining,
@@ -74,6 +75,8 @@ static void	*start_dining(void *arg)
 	df = get_df();
 	philo = (t_phil *)arg;
 
+	if (philo->id % 2 == 0)
+		usleep(df->tte / 2);
 	// while (get_int(&philo->mtx, &philo->meals_left) > 0)
 	while (!get_bool(&df->mtx, &df->sim_finished) && get_bool(&philo->mtx, &philo->full) == false)
 	{
@@ -81,7 +84,7 @@ static void	*start_dining(void *arg)
 			break ;
 		if (philo_eat(df, philo) < 0)
 			break ;
-		switch_turns(df, philo);
+		// switch_turns(df, philo);
 		if (philo_sleep(df, philo) < 0)
 			break ;
 		if (philo_think(df, philo) < 0)
@@ -91,19 +94,19 @@ static void	*start_dining(void *arg)
 	return (NULL);
 }
 
-static void	switch_turns(t_df *df, t_phil *philo)
-{
-	if (philo->id % 2 == 0)
-	{
-		if (get_int(&df->mtx_turn, &df->turn) != ODD_PHILOS)
-			set_int(&df->mtx_turn, &df->turn, ODD_PHILOS);
-	}
-	else
-	{
-		if (get_int(&df->mtx_turn, &df->turn) != EVEN_PHILOS)
-			set_int(&df->mtx_turn, &df->turn, EVEN_PHILOS);
-	}
-}
+// static void	switch_turns(t_df *df, t_phil *philo)
+// {
+// 	if (philo->id % 2 == 0)
+// 	{
+// 		if (get_int(&df->mtx_turn, &df->turn) != ODD_PHILOS)
+// 			set_int(&df->mtx_turn, &df->turn, ODD_PHILOS);
+// 	}
+// 	else
+// 	{
+// 		if (get_int(&df->mtx_turn, &df->turn) != EVEN_PHILOS)
+// 			set_int(&df->mtx_turn, &df->turn, EVEN_PHILOS);
+// 	}
+// }
 
 /*
 Function to execute supervising role using the df-thread 'manager'
@@ -169,7 +172,7 @@ static void	*supervise(void *arg)
 	philos_full = 0;
 	while (!get_bool(&df->mtx, &df->sim_finished))
 	{
-		// philos_full = 0;
+		philos_full = 0;
 		i = -1;
 		while (++i < df->total_philos && !get_bool(&df->mtx, &df->sim_finished))
 		{
@@ -205,13 +208,19 @@ static int	update_philo_death(t_df *df, t_phil *philo)
 	long	time_without_food;
 
 	time_without_food = 0;
-	if (get_int(&philo->mtx, &philo->meals_left) > 0)
-	{
-		time_without_food = get_sim_time(MICRO) - get_long(&philo->mtx,
-				&philo->lastmeal_time);
-		if (get_bool(&philo->mtx, &philo->full) == false && time_without_food > df->ttd)	// protect? maybe not...
-			set_bool(&philo->mtx, &philo->dead, true);
-	}
+	// if (get_int(&philo->mtx, &philo->meals_left) > 0)
+	// {
+	// 	time_without_food = get_sim_time(MICRO) - get_long(&philo->mtx,
+	// 			&philo->lastmeal_time);
+	// 	if (get_bool(&philo->mtx, &philo->full) == false && time_without_food > df->ttd)	// protect? maybe not...
+	// 		set_bool(&philo->mtx, &philo->dead, true);
+	// }
+	
+	time_without_food = get_sim_time(MICRO) - get_long(&philo->mtx,
+			&philo->lastmeal_time);
+	if (get_bool(&philo->mtx, &philo->full) == false && time_without_food > df->ttd)	// protect? maybe not...
+		set_bool(&philo->mtx, &philo->dead, true);
+		
 	return (0);
 }
 

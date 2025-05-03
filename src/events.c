@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/03 22:43:57 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 01:15:21 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,21 @@ Function to simulate eating
 */
 int	philo_eat(t_df *df, t_phil *philo)
 {
+	long	start_time;
+	
 	// test_print_philo_presence(philo);
 	if (philo_should_exit(df, philo, BOTH))
 		return (SIM_COMPLETED);
+	// if (philo->id == 2)
+	// 	printf("Its stuck here on philo no. %d\n", philo->id);
 	philo_pickup_forks(df, philo);
+	start_time = get_abs_time(MICRO);
 	if (log_event_safe_debug(philo, EATING) != 0)
 		return (-1);
-
-	// printf("Its stuck here on philo no. %d\n", philo->id);
-
+	
 	set_long(&philo->mtx, &philo->lastmeal_time, get_sim_time(MICRO));
 	set_int(&philo->mtx, &philo->state, EATING);
-	ft_usleep(df->tte);
+	ft_usleep(start_time, df->tte);
 
 	set_int(&philo->mtx, &philo->meals_left, DECREASE);
 	set_int(&philo->mtx, &philo->state, -1);
@@ -55,7 +58,6 @@ int	philo_eat(t_df *df, t_phil *philo)
 		set_bool(&philo->mtx, &philo->full, true);
 		printf(Y"\t\t\t\tPhilo %d is full\n"RST, philo->id);
 	}
-
 	philo_drop_forks(philo);
 	return (0);
 }
@@ -63,8 +65,8 @@ int	philo_eat(t_df *df, t_phil *philo)
 // Function to lock fork mutexes and update fork states
 static int	philo_pickup_forks(t_df *df, t_phil *philo)
 {
-	while (get_int(&df->mtx_turn, &df->turn) != philo->id % 2)
-		continue ;
+	// while (get_int(&df->mtx_turn, &df->turn) != philo->id % 2)
+	// 	continue ;
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&philo->fork1->mtx)) != 0)
 		return (-1);
 	if (log_event_safe_debug(philo, TOOK_FORK_1) != 0)
@@ -99,16 +101,21 @@ static int	philo_drop_forks(t_phil *philo)
 // Enter Sandman function
 int	philo_sleep(t_df *df, t_phil *philo)
 {
+	long	start_time;
+	
+	start_time = get_abs_time(MICRO);
 	if (philo_should_exit(df, philo, BOTH))
 		return (SIM_COMPLETED);
-	if (df->sim_finished)
-		return (0);
-	if (get_bool(&df->mtx, &df->sim_finished))
-		return (0);
+	// if (df->sim_finished)
+	// 	return (0);
+	// if (get_bool(&df->mtx, &df->sim_finished))
+	// 	return (0);
+	
+	start_time = get_abs_time(MICRO);
 	if (log_event_safe_debug(philo, SLEEPING) < 0)
 		return (-1);
 	philo->state = SLEEPING;
-	ft_usleep(df->tts);
+	ft_usleep(start_time, df->tts);
 	philo->state = -1;
 	return (0);
 }
