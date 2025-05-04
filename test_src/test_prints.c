@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 00:26:01 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 15:26:10 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ void	test_print_logs()
 	while (++i < 500000)
 	{
 		// printf("i = %d:\t", i);
-		log_event_safe_debug(philos + (i % df->total_philos), i % 6);
+		log_event_safe(philos + (i % df->total_philos), i % 6);
 	}
 }
 

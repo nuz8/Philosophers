@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/03 23:37:13 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 16:45:02 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	main(int ac, char **av)
 	if (start_simulation(df) < 0)
 		return (clear_out(df), 3);
 	
-
+	printf("Sim successfully completed.\n");
 	
 	/*
 	test_print fns

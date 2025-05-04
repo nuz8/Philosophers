@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 00:57:53 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 15:47:01 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,8 @@ typedef	enum	e_check
 	PHILO,
 	SIMULATION,
 	BOTH,
+	ONE,
+	TWO
 }				e_check;
 
 /* ==================== enums ==================== */
@@ -228,7 +230,7 @@ bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
 
 /* ----------------------------- loggers.c ----------------------------- */
 
-int		log_event_safe_debug(t_phil *philo, e_phstates state);
+int		log_event_safe(t_phil *philo, e_phstates state);
 
 int		log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
 

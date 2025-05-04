@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 00:27:57 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 17:27:48 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	start_simulation(t_df *df)
 
 	i = -1;
 	philos = df->philos;
-	df->start_time = get_abs_time(MICRO);		// maybe this should only be assigned at the start of the simulation
+	df->start_time = get_abs_time(MICRO);
 	while (++i < df->total_philos)
 	{
 		if (pthread_create(&(philos + i)->th_id, NULL, start_dining,
@@ -46,20 +46,18 @@ int	start_simulation(t_df *df)
 	if (pthread_create(&df->manager, NULL, supervise, df) < 0)
 		return (-1);
 
-	
-	
 	i = -1;
 	while (++i < df->total_philos)
 	{
 		if (pthread_join((philos + i)->th_id, NULL) == 0)
-			printf(M"%ld\t\t\t\tPhilo %d joined.\t\tMain thread\n"RST, get_sim_time(MILLI), (philos + i)->id);
+			printf(M"%ld\t\t\t\tPhilo %d joined.\t\t(Main thread)\n"RST, get_sim_time(MILLI), (philos + i)->id);
 		else
 			return (-1);
 		// if (pthread_join((philos + i)->th_id, NULL) < 0)
 		// 	return (-1);
 	}
 	if (pthread_join(df->manager, NULL) == 0)
-		printf(M"%ld\t\t\t\tManager thread joined.\t\tMain thread\n"RST, get_sim_time(MILLI));
+		printf(M"%ld\t\t\t\tManager thread joined.\t(Main thread)\n"RST, get_sim_time(MILLI));
 	else
 		return (-1);
 	// if (pthread_join(df->manager, NULL) < 0)
@@ -156,18 +154,8 @@ static void	*supervise(void *arg)
 	t_df	*df;
 	int		philos_full;
 	int		i;
-	// int		*full_array;
 	
 	df = (t_df *)arg;
-	
-	
-	// // Fullness indicator
-	// full_array = malloc(df->total_philos * sizeof(int));
-	// if (!full_array)
-	// 	return (NULL);
-	// i = -1;
-	// while (++i < df->total_philos)
-	// 	full_array[i] = 0;
 	
 	philos_full = 0;
 	while (!get_bool(&df->mtx, &df->sim_finished))
@@ -179,15 +167,16 @@ static void	*supervise(void *arg)
 			update_philo_death(df, df->philos + i);
 			if ((df->philos + i)->dead == true)
 			{
-				log_event_safe_debug((df->philos + i), DIED);
-				set_bool(&df->mtx, &df->sim_finished, true);
-				break ;
+				if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx_write)) == 0)
+				{
+					set_bool(&df->mtx, &df->sim_finished, true);
+					printf("%ld	%d died\n", get_sim_time(MILLI), (df->philos + i)->id);
+					print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx_write));
+				}
+				return (NULL) ;
 			}
 			if (get_int(&(df->philos + i)->mtx, &(df->philos + i)->meals_left) == 0)
-			{
 				philos_full++;
-				// printf("\t\t\t\t"M"Philo %d is full.\n"RST, (df->philos + i)->id);
-			}
 		}
 		if (philos_full == df->total_philos)
 		{

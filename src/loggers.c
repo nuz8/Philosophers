@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:58:17 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 00:25:26 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/04 17:10:55 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ int	log_event_safe_debug(t_phil *philo, e_phstates state)
 		return (SIM_COMPLETED);
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx_write)) != 0)
 		return (-1);
+	if (philo_should_exit(df, philo, BOTH))
+	{
+		print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx_write));
+		return (SIM_COMPLETED);
+	}
 	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
 		printf("%ld	"Y"%d "C"has taken a fork"RST"\n", get_sim_time(MILLI), philo->id);
 	else if (state == EATING)
@@ -73,26 +78,26 @@ int	log_event_safe_debug(t_phil *philo, e_phstates state)
 	return (0);
 }
 
-// Same event logging fn as log_event_safe() fn but without mutex locks
-int	log_event_unsafe(t_phil *philo, e_phstates state)
-{
-	t_df	*df;
+// // Same event logging fn as log_event_safe() fn but without mutex locks
+// int	log_event_unsafe(t_phil *philo, e_phstates state)
+// {
+// 	t_df	*df;
 	
-	df = get_df();
-	if (philo_should_exit(df, philo, BOTH))
-		return (SIM_COMPLETED);
-	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
-		printf("%ld	%d "C"has taken a fork"RST"\n", get_sim_time(MILLI), philo->id);
-	else if (state == EATING)
-		printf("%ld	%d "G"is eating"RST"\n", get_sim_time(MILLI), philo->id);
-	else if (state == SLEEPING)
-		printf("%ld	%d "B"is sleeping"RST"\n", get_sim_time(MILLI), philo->id);
-	else if (state == THINKING)
-		printf("%ld	%d "W"is thinking"RST"\n", get_sim_time(MILLI), philo->id);
-	else if (state == DIED)
-		printf("%ld	%d "R"died"RST"\n", get_sim_time(MILLI), philo->id);
-	return (0);
-}
+// 	df = get_df();
+// 	if (philo_should_exit(df, philo, BOTH))
+// 		return (SIM_COMPLETED);
+// 	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
+// 		printf("%ld	%d "C"has taken a fork"RST"\n", get_sim_time(MILLI), philo->id);
+// 	else if (state == EATING)
+// 		printf("%ld	%d "G"is eating"RST"\n", get_sim_time(MILLI), philo->id);
+// 	else if (state == SLEEPING)
+// 		printf("%ld	%d "B"is sleeping"RST"\n", get_sim_time(MILLI), philo->id);
+// 	else if (state == THINKING)
+// 		printf("%ld	%d "W"is thinking"RST"\n", get_sim_time(MILLI), philo->id);
+// 	else if (state == DIED)
+// 		printf("%ld	%d "R"died"RST"\n", get_sim_time(MILLI), philo->id);
+// 	return (0);
+// }
 
 
 /* ------------------------------- For linux ------------------------------- */
@@ -107,6 +112,11 @@ int	log_event_safe(t_phil *philo, e_phstates state)
 		return (SIM_COMPLETED);
 	if (print_mutex_error(LOCK, pthread_mutex_lock(&df->mtx_write)) != 0)
 		return (-1);
+	if (philo_should_exit(df, philo, BOTH))
+	{
+		print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx_write));
+		return (SIM_COMPLETED);
+	}
 	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
 		printf("%ld	%d has taken a fork\n", get_sim_time(MILLI), philo->id);
 	else if (state == EATING)
