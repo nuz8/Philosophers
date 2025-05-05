@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 16:57:29 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/05 22:38:17 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int		philo_eat(t_df *df, t_phil *philo);
 int		philo_sleep(t_df *df, t_phil *philo);
-int		philo_think(t_df *df, t_phil *philo);
+int		philo_think(t_df *df, t_phil *philo, bool first_think);
 bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
 
 // static int	philo_pickup_forks(t_phil *philo);
@@ -43,6 +43,8 @@ int	philo_eat(t_df *df, t_phil *philo)
 
 	if (philo_pickup_forks(df, philo) < 0)
 		return (SIM_COMPLETED);
+	// philo_pickup_forks(df, philo);
+	
 	start_time = get_abs_time(MICRO);
 	if (log_event_safe(philo, EATING) != 0)
 		return (-1);
@@ -75,7 +77,6 @@ static int	philo_pickup_forks(t_df *df, t_phil *philo)
 		return (-1);
 	update_fork(philo->fork1, philo, TAKEN);
 
-	
 	if (df->total_philos > 1)
 	{
 		if (philo_should_exit(df, philo, BOTH))
@@ -146,12 +147,25 @@ int	philo_sleep(t_df *df, t_phil *philo)
 	return (0);
 }
 
-int	philo_think(t_df *df, t_phil *philo)
+int	philo_think(t_df *df, t_phil *philo, bool first_think)
 {
+	long tte, tts, ttt, start_time;
+
+	(void)first_think;
+	start_time = get_sim_time(MICRO);
 	if (philo_should_exit(df, philo, BOTH))
 		return (SIM_COMPLETED);
 	if (log_event_safe(philo, THINKING) < 0)
 		return (-1);
+	
+	if (df->total_philos % 2 == 0)
+		return (0);
+	tte = df->tte;
+	tts = df->tts;
+	ttt = tte * 2 - tts; 
+	if (ttt < 0)
+		ttt = 0;
+	ft_usleep(start_time, ttt);
 	return (0);
 }
 

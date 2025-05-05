@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 16:35:54 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/05 18:51:17 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,16 +129,16 @@ static void	tag_forks(t_phil *philo)
 	df = get_df();
 	forks = df->forks;
 	
-	// philo->fork1 = forks + (philo->id % df->total_philos);
-	// philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
+	philo->fork1 = forks + (philo->id % df->total_philos);
+	philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
 	if (philo->id % 2 == 0)
 	{
 		philo->fork1 = forks + ((philo->id - 1) % df->total_philos);
 		philo->fork2 = forks + (philo->id % df->total_philos);
 	}
-	else
-	{
-		philo->fork1 = forks + (philo->id % df->total_philos);
-		philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
-	}
+	// else
+	// {
+	// 	philo->fork1 = forks + (philo->id % df->total_philos);
+	// 	philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
+	// }
 }

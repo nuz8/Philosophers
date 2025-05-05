@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 15:47:01 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/05 22:34:17 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,8 @@ typedef struct	s_df
 	int			turn;
 	t_mutex		mtx_turn;
 	bool		mtx_turn_init;
+	bool		all_threads_ready;
+	int			threads_running_nbr;
 	long		start_time;		// time of start of the simulation in microseconds
 	bool		sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
 }				t_df;
@@ -225,7 +227,7 @@ int		start_simulation(t_df *df);
 // void	philo_pickup_forks();
 int		philo_eat(t_df *df, t_phil *philo);
 int		philo_sleep(t_df *df, t_phil *philo);
-int		philo_think(t_df *df, t_phil *philo);
+int		philo_think(t_df *df, t_phil *philo, bool first_think);
 bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
 
 /* ----------------------------- loggers.c ----------------------------- */
@@ -246,6 +248,12 @@ long	get_long(t_mutex *mtx, long *source);
 int		set_bool(t_mutex *mtx, bool *destination, bool put);
 int		set_int(t_mutex *mtx, int *destination, int put);
 int		set_long(t_mutex *mtx, long *destination, long put);
+
+
+/* ----------------------------- utils.c ----------------------------- */
+
+void	philos_sync_by_wait(t_df *df);
+bool	all_threads_running(t_mutex *mtx, int *threads, int total_philos);
 
 /* ----------------------------- utils.c ----------------------------- */
 

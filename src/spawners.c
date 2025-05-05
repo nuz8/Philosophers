@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 01:09:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/03 23:25:31 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/05 22:25:51 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ t_df	*get_df(void)
 			df->mtx_turn_init = false;
 			df->start_time = -1;
 			df->sim_finished = false;
+			df->all_threads_ready = false;
+			df->threads_running_nbr = 0;
 		}
 	}
 	return (df);

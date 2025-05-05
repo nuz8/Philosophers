@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 01:08:30 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/05 20:56:12 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ int	ft_usleep(long start_time, long tts_usec)
 		rem_tts = tts_usec - time_passed;
 
 		if (rem_tts > 100)
-			usleep(rem_tts / 2);
+			usleep(100);
 		else
 		{
 			while (start_time + tts_usec > get_abs_time(MICRO))
