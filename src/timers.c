@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/05 20:56:12 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/06 18:14:26 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 long	get_abs_time(int mode);
 long	get_sim_time(int mode);
 int		ft_usleep(long start_time, long tts_usec);
+// int		ft_usleep2(long start_time, long tts_usec, t_phil *philo);
 
 /*
 Function to get the time in sec, millisecond, or microsecond based on the value
@@ -122,27 +123,90 @@ Custom usleep fn			// Need to remove the type variable later
 // 	return (0);
 // }
 
+// int	ft_usleep(long start_time, long tts_usec)
+// {
+// 	// long	time_passed;
+// 	long	rem_tts;
+// 	t_df	*df;
+
+// 	df = get_df();
+// 	while (get_abs_time(MICRO) < start_time + tts_usec)
+// 	{
+// 		// if (get_bool(&df->mtx, &df->sim_finished))
+// 		// 	break ;
+// 		if (philo_should_exit(df, NULL, SIMULATION))
+// 			return (SIM_COMPLETED);
+// 		// time_passed = get_abs_time(MICRO) - start_time;
+// 		// rem_tts = tts_usec - time_passed;
+// 		rem_tts = tts_usec + start_time - get_abs_time(MICRO);
+
+// 		if (rem_tts > 100)
+// 			usleep(100);
+// 		else
+// 		{
+// 			while (get_abs_time(MICRO) < start_time + tts_usec)
+// 				continue ;
+// 		}
+// 	}
+// 	return (0);
+// }
+
+/*
+ft_usleep fn above but with get_sim_time instead of get_abs_time
+	- 
+*/
 int	ft_usleep(long start_time, long tts_usec)
 {
-	long	time_passed;
+	// long	time_passed;
 	long	rem_tts;
 	t_df	*df;
 
 	df = get_df();
-	while (get_abs_time(MICRO) < start_time + tts_usec)
+	while (get_sim_time(MICRO) < start_time + tts_usec)
 	{
-		if (get_bool(&df->mtx, &df->sim_finished) == true)
-			break ;
-		time_passed = get_abs_time(MICRO) - start_time;
-		rem_tts = tts_usec - time_passed;
+		// if (get_bool(&df->mtx, &df->sim_finished))
+		// 	break ;
+		if (philo_should_exit(df, NULL, SIMULATION))
+			return (SIM_COMPLETED);
+		// time_passed = get_sim_time(MICRO) - start_time;
+		// rem_tts = tts_usec - time_passed;
+		rem_tts = tts_usec + start_time - get_sim_time(MICRO);
 
 		if (rem_tts > 100)
 			usleep(100);
 		else
 		{
-			while (start_time + tts_usec > get_abs_time(MICRO))
+			while (get_sim_time(MICRO) < start_time + tts_usec)
 				continue ;
 		}
 	}
 	return (0);
 }
+
+
+// int	ft_usleep2(long start_time, long tts_usec, t_phil *philo)
+// {
+// 	long	time_passed;
+// 	long	rem_tts;
+// 	t_df	*df;
+
+// 	df = get_df();
+// 	printf("\t\t\t\tPhilo "Y"%d"RST" is here\n", philo->id);
+// 	while (get_sim_time(MICRO) < start_time + tts_usec)
+// 	{
+// 		// printf("\t\t\t\tPhilo "Y"%d"RST" is here\n", philo->id);
+// 		if (get_bool(&df->mtx, &df->sim_finished) == true)
+// 			break ;
+// 		time_passed = get_sim_time(MICRO) - start_time;
+// 		rem_tts = tts_usec - time_passed;
+
+// 		if (rem_tts > 100)
+// 			usleep(100);
+// 		else
+// 		{
+// 			while (start_time + tts_usec > get_sim_time(MICRO))
+// 				continue ;
+// 		}
+// 	}
+// 	return (0);
+// }

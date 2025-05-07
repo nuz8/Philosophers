@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:11 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/04 16:45:02 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/06 20:36:13 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,28 +29,11 @@ int	main(int ac, char **av)
 	
 	if (init_df(ac, av) != 0)
 		return (clear_out(df), 2);
-	// Simulation code here; TODO:
-	// 1. Tag forks in each philo
-	//		to indicate which forks each philo is allowed to pick up or has access to
-	// 2. Initialize threads and write the simulation function to pass to the thread init fn
-	//		for 1 philo
-	//		for 2 philos
-	//		for more philos
-	//
-	
+
 	if (start_simulation(df) < 0)
 		return (clear_out(df), 3);
 	
 	printf("Sim successfully completed.\n");
-	
-	/*
-	test_print fns
-	*/
-	// test_print_time();
-	// test_print_fork_tags();
-	// test_print_elements();
-	// test_print_logs();
-	// test_print_mutex_errors();
 	
 	clear_out(df);
 	return (0);

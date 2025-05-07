@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/05 22:34:17 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/07 16:38:29 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ typedef struct	s_phil
 	pthread_t	th_id;			// thread id number
 	t_mutex		mtx;			// philo mutex
 	bool		mtx_init;		// flag for initialization status of the mutex mtx
-	int			state;			// philo states from e_phstates enums, else flag -1
+	int			state;	// remove	// philo states from e_phstates enums, else flag -1
 	t_fork		*fork1;			// pointer to the first fork
 	t_fork		*fork2;			// pointer to the second fork
 	int			meals_left;		// keep count of the number of times the philo has eaten
@@ -190,6 +190,9 @@ int		arg_error(void);
 void	print_errstr(char *str);
 int		print_mutex_error(e_mtx_op operation, int err_code);
 
+int	print_mutex_error_debug(t_phil *philo, t_fork *fork, e_mtx_op operation, int err_code);
+
+
 /* ------------------------------- spawners.c ------------------------------- */
 
 t_df	*get_df(void);
@@ -218,9 +221,15 @@ long	get_abs_time(int mode);
 long	get_sim_time(int mode);
 int		ft_usleep(long start_time, long tts_usec);
 
+int	ft_usleep2(long start_time, long tts_usec, t_phil *philo);
+
 /* ----------------------------- simulation.c ----------------------------- */
 
 int		start_simulation(t_df *df);
+
+/* ----------------------------- manager.c ----------------------------- */
+
+void	*supervise(void *arg);
 
 /* ----------------------------- events.c ----------------------------- */
 
@@ -234,7 +243,7 @@ bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
 
 int		log_event_safe(t_phil *philo, e_phstates state);
 
-int		log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
+int	log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 
@@ -250,17 +259,13 @@ int		set_int(t_mutex *mtx, int *destination, int put);
 int		set_long(t_mutex *mtx, long *destination, long put);
 
 
-/* ----------------------------- utils.c ----------------------------- */
+/* ----------------------------- synchronizers.c ----------------------------- */
 
-void	philos_sync_by_wait(t_df *df);
 bool	all_threads_running(t_mutex *mtx, int *threads, int total_philos);
 
 /* ----------------------------- utils.c ----------------------------- */
 
-// void	clear_out(t_df *df, int mode);
 void	clear_out(t_df *df);
-
-int	destroy_mutex_safely(t_mutex *mtx);		// to be removed
 
 /* ============================= test functions ============================= */
 

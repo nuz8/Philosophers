@@ -6,19 +6,15 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:46:44 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/02 16:22:38 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/07 16:37:44 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
 void	clear_out(t_df *df);
-
-int		destroy_mutex_safely(t_mutex *mtx);	// to be removed because to be made static later on; only here for the test_print fn
-
 static void	clear_philos(t_df *df);
 static void	clear_forks(t_df *df);
-// static int	destroy_mutex_safely(t_mutex *mtx);	to be uncommented in place of above to-be-removed fn
 
 /*
 Function to clean all mallocs and mutex inits
@@ -29,42 +25,14 @@ void	clear_out(t_df *df)
 		clear_forks(df);
 	if (df->philos)
 		clear_philos(df);
-	// if (df->mtx_init == true)
-	// 	print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx));	// Old implementation
 	if (df->mtx_init == true)
-		destroy_mutex_safely(&df->mtx);
+		print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx));
 	if (df->mtx_write_init == true)
-		destroy_mutex_safely(&df->mtx_write);
+		print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx_write));
 	if (df->mtx_turn_init == true)
-		destroy_mutex_safely(&df->mtx_turn);
+		print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx_turn));
 	if (df)
 		free(df);
-}
-
-/*
-Function to clean all t_phil instances (mallocs and mutexes)
-	- Checks to see if philos pointer has allocation with a null check
-	- Checks if the mutex associated with each philo was initiated using the
-	  the bool mtx_init
-	- If mtx_init is true then destroys the mutex associated with this philo,
-	  and carries on the checks for each element in the philos array
-	- Finally, when all mutexes are destroyed, the philos allocation is free'd
-*/
-static void	clear_philos(t_df *df)
-{
-	int		i;
-
-	i = -1;
-	if (df->philos)
-	{
-		while (++i < df->total_philos)
-			if ((df->philos + i)->mtx_init == true)
-				destroy_mutex_safely(&(df->philos + i)->mtx);
-				// print_mutex_error(DESTROY,
-				// 	pthread_mutex_destroy(&(df->philos + i)->mtx));	// Old implementation
-		free(df->philos);
-		df->philos = NULL;
-	}
 }
 
 /*
@@ -85,41 +53,34 @@ static void	clear_forks(t_df *df)
 	{
 		while (++i < df->total_philos)
 			if ((df->forks + i)->mtx_init == true)
-				destroy_mutex_safely(&(df->forks + i)->mtx);
-				// print_mutex_error(DESTROY,
-				// 	pthread_mutex_destroy(&(df->forks + i)->mtx));	// Old implementation
+				print_mutex_error(DESTROY,
+						pthread_mutex_destroy(&(df->forks + i)->mtx));
 		free(df->forks);
 		df->forks = NULL;
 	}
 }
 
 /*
-Function for safe mutex_destroy
-  - Handles the EBUSY error when trying to destroy a mutex that is locked
-  - If a mutex is locked, first unlocks it and then destroys
-  - Prints any other mutex errors, including that coming from mutex_unlock
-    when unlock fails
-  - Returns 0 if successful
-  - Returns -1 if something fails and error message is displayed
+Function to clean all t_phil instances (mallocs and mutexes)
+	- Checks to see if philos pointer has allocation with a null check
+	- Checks if the mutex associated with each philo was initiated using the
+	  the bool mtx_init
+	- If mtx_init is true then destroys the mutex associated with this philo,
+	  and carries on the checks for each element in the philos array
+	- Finally, when all mutexes are destroyed, the philos allocation is free'd
 */
-// static int	destroy_mutex_safely(t_mutex *mtx)
-int	destroy_mutex_safely(t_mutex *mtx)
+static void	clear_philos(t_df *df)
 {
-	int	ret;
-	
-	ret = pthread_mutex_destroy(mtx);
-	if (ret == 0)
-		return (0);
-	else if (ret == EBUSY)
+	int		i;
+
+	i = -1;
+	if (df->philos)
 	{
-		print_mutex_error(UNLOCK, pthread_mutex_unlock(mtx));
-		ret = pthread_mutex_destroy(mtx);
-		if (ret != 0)
-			if (print_mutex_error(UNLOCK, ret) != 0)
-				return (-1);
+		while (++i < df->total_philos)
+			if ((df->philos + i)->mtx_init == true)
+				print_mutex_error(DESTROY,
+						pthread_mutex_destroy(&(df->philos + i)->mtx));
+		free(df->philos);
+		df->philos = NULL;
 	}
-	else
-		if (print_mutex_error(DESTROY, ret) != 0)
-			return (-1);
-	return (0);
 }

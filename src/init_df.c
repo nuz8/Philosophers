@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/05 18:51:17 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/07 16:45:55 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,15 @@ int	init_df(int ac, char **av)
 		return (-1);
 	if (init_philos(df) < 0)
 		return (-1);
-	
-	if (pthread_mutex_init(&df->mtx, NULL) < 0)			// TODO: error codes
+	if (print_mutex_error(INIT, pthread_mutex_init(&df->mtx, NULL)))
 		return (-1);
 	df->mtx_init = true;
-	if (pthread_mutex_init(&df->mtx_write, NULL) < 0)			// TODO: error codes
+	if (print_mutex_error(INIT, pthread_mutex_init(&df->mtx_write, NULL)))
 		return (-1);
 	df->mtx_write_init = true;
-	if (pthread_mutex_init(&df->mtx_turn, NULL) < 0)			// TODO: error codes
+	if (print_mutex_error(INIT, pthread_mutex_init(&df->mtx_turn, NULL)))
 		return (-1);
 	df->mtx_turn_init = true;
-	// df->start_time = get_abs_time(MICRO);		// maybe this should only be assigned at the start of the simulation
-	// if (df->start_time < 0)
-	// 	return (-1);
 	return (0);
 }
 
@@ -129,16 +125,16 @@ static void	tag_forks(t_phil *philo)
 	df = get_df();
 	forks = df->forks;
 	
-	philo->fork1 = forks + (philo->id % df->total_philos);
-	philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
-	if (philo->id % 2 == 0)
+	// philo->fork1 = forks + (philo->id % df->total_philos);
+	// philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
+	if (philo->id % 2)
 	{
 		philo->fork1 = forks + ((philo->id - 1) % df->total_philos);
 		philo->fork2 = forks + (philo->id % df->total_philos);
 	}
-	// else
-	// {
-	// 	philo->fork1 = forks + (philo->id % df->total_philos);
-	// 	philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
-	// }
+	else
+	{
+		philo->fork1 = forks + (philo->id % df->total_philos);
+		philo->fork2 = forks + ((philo->id - 1) % df->total_philos);
+	}
 }

@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/05/05 22:17:49 by pamatya          ###   ########.fr        #
+#    Updated: 2025/05/07 13:25:42 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ IMAGE_NAME = valgrind
 
 SRC_MAIN	=	main.c errors.c init_df.c spawners.c string_utils.c parser.c \
 				utils.c timers.c simulation.c events.c loggers.c getter_fns.c \
-				setter_fns.c synchronizers.c
+				setter_fns.c synchronizers.c manager.c
 SRC_TEST	=	test_prints.c
 
 # VPATH		+=	$(D_PTHREADS) $(D_SRC)
@@ -59,7 +59,7 @@ DEP			= 	$(OBJ:.o=.d)
 
 # ----------------- Target Binary ----------------- #
 NAME		=	philo
-ARGS		=	3 800 200 200 2
+ARGS		=	3 1 200 200 2
 
 # ----------------- Headers Flag ----------------- #
 HEADS_FLG	=	-I$(D_INC)
@@ -138,6 +138,7 @@ valgrind: $(NAME)
 
 helgrind: $(NAME)
 	@valgrind $(HELGRIND_OPTS) ./$(NAME) $(ARGS)
+# @valgrind $(HELGRIND_OPTS) ./$(NAME)
 
 format:
 	@c_formatter_42 main.c $(D_PTHREADS)/*.c $(D_SRC)/*.c $(D_INC)/*.h
