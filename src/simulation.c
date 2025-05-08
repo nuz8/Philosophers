@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 14:59:02 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 02:24:27 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,9 @@ static int	philos_stagger(t_phil *philo)
 	df = get_df();
 	if (philo->id % 2 == 0)
 	{
-		if (log_event_safe(philo, THINKING) != 0)
+		if (log_event_safe(philo, THINKING))
 			return (SIM_COMPLETED);
-		if (ft_usleep(start_time, df->tte / 2) != 0)
+		if (ft_usleep(start_time, df->tte / 2))
 			return (SIM_COMPLETED);
 	}
 	return (0);

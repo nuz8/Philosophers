@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:46:44 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 16:37:44 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 00:43:26 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@ void	clear_out(t_df *df)
 		print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx));
 	if (df->mtx_write_init == true)
 		print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx_write));
-	if (df->mtx_turn_init == true)
-		print_mutex_error(DESTROY, pthread_mutex_destroy(&df->mtx_turn));
 	if (df)
 		free(df);
 }
@@ -53,8 +51,11 @@ static void	clear_forks(t_df *df)
 	{
 		while (++i < df->total_philos)
 			if ((df->forks + i)->mtx_init == true)
-				print_mutex_error(DESTROY,
-						pthread_mutex_destroy(&(df->forks + i)->mtx));
+			{
+				if (print_mutex_error(DESTROY,
+						pthread_mutex_destroy(&(df->forks + i)->mtx)))
+					printf("Fork mutex:	%d\n", (df->forks + i)->id);
+			}	
 		free(df->forks);
 		df->forks = NULL;
 	}
@@ -78,8 +79,11 @@ static void	clear_philos(t_df *df)
 	{
 		while (++i < df->total_philos)
 			if ((df->philos + i)->mtx_init == true)
-				print_mutex_error(DESTROY,
-						pthread_mutex_destroy(&(df->philos + i)->mtx));
+			{
+				if (print_mutex_error(DESTROY,
+						pthread_mutex_destroy(&(df->philos + i)->mtx)))
+					printf("Philo mutex:	%d\n", (df->forks + i)->id);
+			}
 		free(df->philos);
 		df->philos = NULL;
 	}

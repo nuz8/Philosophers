@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 01:09:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/05 22:25:51 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 00:58:27 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ t_df	*get_df(void)
 			df->philos = NULL;
 			df->mtx_init = false;
 			df->mtx_write_init = false;
-			df->turn = ODD_PHILOS;
-			df->mtx_turn_init = false;
 			df->start_time = -1;
 			df->sim_finished = false;
 			df->all_threads_ready = false;

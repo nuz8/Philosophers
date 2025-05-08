@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:24:32 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/02 19:44:14 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 00:27:44 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int		get_int(t_mutex *mtx, int *source);
 long	get_long(t_mutex *mtx, long *source);
 
 int	test_get_int(t_mutex *mtx, int *source, t_phil *philo);
-
 
 // int	get_bool(t_mutex *mtx, bool *source, bool *fetch)
 // {

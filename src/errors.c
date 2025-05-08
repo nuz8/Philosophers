@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:01:45 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 13:35:56 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:32:07 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,18 @@ int	print_mutex_error_debug(t_phil *philo, t_fork *fork, e_mtx_op operation, int
 {
 	if (err_code == 0)
 	{
+		// MacOS block
+		// if (operation == LOCK)
+		// 	printf(R"%ld	%d got the fork %d\n"RST, get_sim_time(MILLI), philo->id, fork->id);
+		// else if (operation == UNLOCK)
+		// 	printf(G"%ld	%d released the fork %d\n"RST, get_sim_time(MILLI), philo->id, fork->id);
+		// return (0);
+		
+		// Linux block
 		if (operation == LOCK)
-			printf(R"%ld	%d got the fork %d\n"RST, get_sim_time(MILLI), philo->id, fork->id);
+			printf("%ld	%d got the fork %d\n", get_sim_time(MILLI), philo->id, fork->id);
 		else if (operation == UNLOCK)
-			printf(G"%ld	%d released the fork %d\n"RST, get_sim_time(MILLI), philo->id, fork->id);
+			printf("%ld	%d released the fork %d\n", get_sim_time(MILLI), philo->id, fork->id);
 		return (0);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 20:23:19 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 16:52:55 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:55:56 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,13 +138,21 @@ void	test_print_fork_owners()
 	i = -1;
 	while (++i < df->total_philos && printed != df->total_philos)
 	{
-		// if ((df->forks + i)->id != 0 && indicator[i] == 0)
-		if (indicator[i] == 0 && get_int(&(df->forks + i)->mtx, &(df->forks + i)->id) != 0)
+		// if (indicator[i] == 0 && (df->forks + i)->taker_id > 0)
+		if (indicator[i] == 0 && get_int(&(df->forks + i)->mtx, &(df->forks + i)->taker_id) != 0)
 		{
 			printf("%ld\tFork "G"%d"RST" is with Philo "Y"%d\n"RST, get_sim_time(MILLI), (df->forks + i)->id,
 				(df->forks + i)->taker_id);
 			// printf("%ld\tFork %d is with Philo %d\n", get_sim_time(MILLI), (df->forks + i)->id,
 			// 	(df->forks + i)->taker_id);
+			printed++;
+			indicator[i] = 1;
+		}
+		// if (indicator[i] == 0 && (df->forks + i)->taker_id == 0)
+		if (indicator[i] == 0 && get_int(&(df->forks + i)->mtx, &(df->forks + i)->taker_id) == 0)
+
+		{
+			printf("%ld\tFork "G"%d"RST" is "Y"free\n"RST, get_sim_time(MILLI), (df->forks + i)->id);
 			printed++;
 			indicator[i] = 1;
 		}

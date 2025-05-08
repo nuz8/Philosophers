@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 16:38:29 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 00:42:50 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ typedef struct	s_phil
 	int			state;	// remove	// philo states from e_phstates enums, else flag -1
 	t_fork		*fork1;			// pointer to the first fork
 	t_fork		*fork2;			// pointer to the second fork
-	int			meals_left;		// keep count of the number of times the philo has eaten
+	long		meals_left;		// keep count of the number of times the philo has eaten
 	long		lastmeal_time;	// time stamp when the philosopher last ate
 	bool		full
 	;		// 1 if it is the last phil in the round-table
@@ -166,14 +166,13 @@ typedef struct	s_df
 	
 	t_fork		*forks;			// pointer to the array of forks
 	t_phil		*philos;		// pointer to the array of philosophers
+	
 	t_mutex		mtx;			// dataframe mutex
-	t_mutex		mtx_write;		// mutex for only writing logs
 	bool		mtx_init;		// flag for initialization status of the mutex mtx
+	t_mutex		mtx_write;		// mutex for only writing logs
 	bool		mtx_write_init;	// boolean flag to indicate mtx_write was initialized
+	
 	pthread_t	manager;		// manager is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
-	int			turn;
-	t_mutex		mtx_turn;
-	bool		mtx_turn_init;
 	bool		all_threads_ready;
 	int			threads_running_nbr;
 	long		start_time;		// time of start of the simulation in microseconds
@@ -230,14 +229,18 @@ int		start_simulation(t_df *df);
 /* ----------------------------- manager.c ----------------------------- */
 
 void	*supervise(void *arg);
+bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
 
 /* ----------------------------- events.c ----------------------------- */
 
-// void	philo_pickup_forks();
 int		philo_eat(t_df *df, t_phil *philo);
 int		philo_sleep(t_df *df, t_phil *philo);
 int		philo_think(t_df *df, t_phil *philo, bool first_think);
-bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
+
+/* ----------------------------- forks.c ----------------------------- */
+
+int	philo_pickup_forks(t_df *df, t_phil *philo);
+int	philo_drop_forks(t_phil *philo, e_check drop);
 
 /* ----------------------------- loggers.c ----------------------------- */
 

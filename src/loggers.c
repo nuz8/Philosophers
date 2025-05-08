@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:58:17 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 13:20:03 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:19:54 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,6 @@ int	log_event_safe(t_phil *philo, e_phstates state)
 		printf("%ld	%d is sleeping\n", start_time, philo->id);
 	else if (state == THINKING)
 		printf("%ld	%d is thinking\n", start_time, philo->id);
-	// else if (state == DIED)
-	// 	printf("%ld	%d died\n", start_time, philo->id);
 	if (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx_write)) != 0)
 		return (-1);
 	return (0);

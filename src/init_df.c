@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/07 16:45:55 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 02:58:31 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,6 @@ int	init_df(int ac, char **av)
 	if (print_mutex_error(INIT, pthread_mutex_init(&df->mtx_write, NULL)))
 		return (-1);
 	df->mtx_write_init = true;
-	if (print_mutex_error(INIT, pthread_mutex_init(&df->mtx_turn, NULL)))
-		return (-1);
-	df->mtx_turn_init = true;
 	return (0);
 }
 
@@ -90,26 +87,6 @@ int	init_philos(t_df *df)
 	}
 	return (0);
 }
-
-// /*
-// Function to tag the forks for all philos, such that each philo should be able to
-// lock only those in their proximity when it is time to pick up the forks
-// */
-// static void	tag_forks_v0(t_df * df)
-// {
-// 	t_phil	*philos;
-// 	t_fork	*forks;
-// 	int		i;
-
-// 	philos = df->philos;
-// 	forks = df->forks;
-// 	i = -1;
-// 	while (++i < df->total_philos)
-// 	{
-// 		(philos + i)->fork1 = forks + (i % df->total_philos);
-// 		(philos + i)->fork2 = forks + ((i + 1) % df->total_philos);
-// 	}
-// }
 
 /*
 Function to tag the forks for the provided philo that it should be able to lock
