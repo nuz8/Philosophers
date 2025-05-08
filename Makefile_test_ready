@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/02/11 13:19:15 by pamatya          ###   ########.fr        #
+#    Updated: 2025/05/08 22:04:29 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,8 +30,7 @@ D_LIB		=	lib
 D_OBJ		=	obj
 
 D_SRC		=	src
-D_TEST		=	src_test
-D_PTHREADS	=	$(D_TEST)/src_test_pthreads
+D_TEST		=	test_src
 
 # ----------------- Docker files ----------------- #
 
@@ -46,41 +45,39 @@ IMAGE_NAME = valgrind
 
 # ----------------- Source, Object and Dependency files ----------------- #
 
-SRC_MAIN	=	test_main.c routines.c \
-				test_first_threads.c test_mutex.c test_mutex_loop.c \
-				test_thread_return.c test_print_primes.c test_sum_primes.c \
-				test_trylock.c
+SRC_MAIN	=	main.c errors.c init_df.c spawners.c string_utils.c parser.c \
+				utils.c timers.c simulation.c events.c loggers.c getter_fns.c \
+				setter_fns.c synchronizers.c manager.c forks.c
+SRC_TEST	=	test_prints.c
 
 # VPATH		+=	$(D_PTHREADS) $(D_SRC)
-VPATH		+=	$(D_SRC) $(D_PTHREADS)
+VPATH		+=	$(D_SRC) $(D_TEST)
 
-SRC			=	$(SRC_MAIN)
+SRC			=	$(SRC_MAIN) $(SRC_TEST)
 OBJ 		+= 	$(addprefix $(D_OBJ)/, $(SRC:.c=.o))
 DEP			= 	$(OBJ:.o=.d)
 
 # ----------------- Target Binary ----------------- #
-NAME		=	test
+NAME		=	philo
+ARGS		=	5 810 200 200 5
 
 # ----------------- Headers Flag ----------------- #
 HEADS_FLG	=	-I$(D_INC)
-
-# ----------------- Libraries ----------------- #
-
-LIBS_FLG		=	$(LIBFT_FLG) $(READLINE_FLG)
-
-# LIBFT
-LIBFT			=	libft.a
-LIBFT_DIR		=	$(D_LIB)															# library file directory
-LIBFT_HED		=	$(D_LIB)/includes													# header directory
-LIBFT_FLG		=	-L$(LIBFT_DIR) -l$(basename $(subst lib,,$(LIBFT)))
 
 # ----------------- Valgrind ----------------- #
 VALGRIND_OPTS	= 	--leak-check=full \
 					--show-leak-kinds=all \
 					--trace-children=yes \
 					--track-fds=yes \
-					-s \
+					-s
 # --child-silent-after-fork=yes
+
+# ----------------- Helgrind ----------------- #
+HELGRIND_OPTS =		--tool=helgrind \
+					--track-lockorders=yes \
+					--history-level=full \
+					-s
+
 # Leak Sanitizer for leak check on Mac (run: make LEAK=1)
 LEAKSAN			=	liblsan.dylib
 LEAKSAN_DIR		=	/Users/dstinghe/LeakSanitizer
@@ -106,7 +103,6 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "Compiling..."
-	@make -sC $(D_LIB)
 	@$(CC) $(CFLAGS) $(HEADS_FLG) $^ $(LIBS_FLG) -o $@ 
 
 $(D_OBJ)/%.o: %.c
@@ -116,21 +112,20 @@ $(D_OBJ)/%.o: %.c
 
 clean:
 	@$(RM) $(OBJ) $(DEP)
-	@make clean -sC $(D_LIB)
 	@echo "$(YELLOW)Cleaned Objects & Dependencies$(RESET)"
 
 fclean:
 	@$(RM) $(OBJ) $(DEP) $(NAME)
-	@make fclean -sC $(D_LIB)
 	@echo "$(YELLOW)Cleaned All$(RESET)"
 
 re: fclean all
 
 valgrind: $(NAME)
-	@valgrind $(VALGRIND_OPTS) ./$(NAME)
+	@valgrind $(VALGRIND_OPTS) ./$(NAME) $(ARGS)
 
-valgrind_n: $(NAME)
-	@env -i valgrind $(VALGRIND_OPTS) ./$(NAME)
+helgrind: $(NAME)
+	@valgrind $(HELGRIND_OPTS) ./$(NAME) $(ARGS)
+# @valgrind $(HELGRIND_OPTS) ./$(NAME)
 
 format:
 	@c_formatter_42 main.c $(D_PTHREADS)/*.c $(D_SRC)/*.c $(D_INC)/*.h

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 17:55:46 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/08 02:13:35 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/08 19:14:46 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,9 @@ void	*supervise(void *arg)
 		if (philos_full == df->total_philos)
 		{
 			set_bool(&df->mtx, &df->sim_finished, true);
-			printf("Exiting by all philos being full.\n");
 			break ;
 		}
 	}
-	printf(M"%ld\t\t\t\tManager thread is exiting.\n"RST, get_sim_time(MILLI));
 	return (NULL);
 }
 
@@ -76,7 +74,7 @@ static bool	philo_died(t_df *df, t_phil *philo, int *philos_full)
 			printf("%ld	%d died\n", get_sim_time(MILLI), philo->id);
 			print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx_write));
 		}
-		return (printf("\t\t\t"M"Manager thread exiting here instead due to "Y"%d"M" dying\n"RST, philo->id), true) ;
+		return (true) ;
 	}
 	if (get_long(&philo->mtx, &philo->meals_left) == 0)
 		(*philos_full)++;
@@ -85,19 +83,16 @@ static bool	philo_died(t_df *df, t_phil *philo, int *philos_full)
 
 bool	philo_should_exit(t_df *df, t_phil *philo, e_check check)
 {
-	// if (check == PHILO)
 	if (philo && check == PHILO)
 	{
 		if (get_bool(&philo->mtx, &philo->full) == true)
 			return (true);
 	}
-	// else if (check == SIMULATION)
 	else if (df && check == SIMULATION)
 	{
 		if (get_bool(&df->mtx, &df->sim_finished))
 			return (true);	
 	}
-	// else if (check == BOTH)
 	else if (df && philo && check == BOTH)
 	{
 		if (get_bool(&df->mtx, &df->sim_finished)
@@ -105,4 +100,4 @@ bool	philo_should_exit(t_df *df, t_phil *philo, e_check check)
 			return (true);
 	}
 	return (false);
-}
+	}
