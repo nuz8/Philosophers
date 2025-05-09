@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 23:06:38 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 23:13:03 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,12 +179,6 @@ typedef struct s_df
 /* ================================ structs ================================ */
 
 /* ========================== function prototypes ========================== */
-/* -------------------------------- errors.c -------------------------------- */
-
-int		arg_error(void);
-void	print_errstr(char *str);
-int		print_mutex_error(t_mtx_op operation, int err_code);
-int		print_thread_error(t_mtx_op operation, int err_code);
 
 /* ------------------------------- spawners.c ------------------------------- */
 
@@ -198,6 +192,13 @@ int		init_df(int ac, char **av);
 int		parse_arguments(int ac, char **av, t_df *df);
 int		init_philos(t_df *df);
 int		init_forks(t_df *df);
+
+/* -------------------------------- errors.c -------------------------------- */
+
+int		arg_error(void);
+void	print_errstr(char *str);
+int		print_mutex_error(t_mtx_op operation, int err_code);
+int		print_thread_error(t_mtx_op operation, int err_code);
 
 /* ----------------------------- string_utils.c ----------------------------- */
 
