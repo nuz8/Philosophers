@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 20:01:45 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 15:38:14 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 18:09:41 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	arg_error(void)
 {
 	int	ret;
 
-	ret = ft_fprintf_str(STDERR_FILENO, (const char *[]){"Syntax error! ",
+	ret = ft_fprintf_str(STDERR_FILENO, (const char *[]){"Invalid arguments! ",
 			"Usage options:\n", "\t1. ./philo (no. of philos) (time to die) ",
 			"(time to eat) (time to sleep)\n",
 			"\t2. ./philo (no. of philos) (time to die) ",

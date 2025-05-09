@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 00:56:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 15:13:41 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 18:23:55 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static long	ft_atol_tailored(const char *str);
 static int	ft_isdigit(unsigned int c);
 static int	ft_is_wspace(unsigned int c);
 static int	check_invalid_beyond_digits(const char *str, int pos);
+static int	check_invalid_digit_length(const char *str, int pos);
 
 /*
 Function to import the arguments input by the user, parse them and assign them
@@ -73,6 +74,8 @@ static long	ft_atol_tailored(const char *str)
 		return (print_errstr(ERR_NEGATIVE), -1);
 	if (check_invalid_beyond_digits(str, pos))
 		return (print_errstr(ERR_INVALID), -1);
+	if (check_invalid_digit_length(str, pos))
+		return (print_errstr(ERR_TOOLONG), -1);
 	while (str[pos] && ft_isdigit(str[pos]))
 		num = num * 10 + (str[pos++] - '0');
 	if (num > INT_MAX)
@@ -114,5 +117,15 @@ static int	check_invalid_beyond_digits(const char *str, int pos)
 			return (1);
 		i++;
 	}
+	return (0);
+}
+
+static int	check_invalid_digit_length(const char *str, int pos)
+{
+	int	digit_len;
+	
+	digit_len = ft_strlen(str + pos);
+	if (digit_len > 10)
+		return (1);
 	return (0);
 }

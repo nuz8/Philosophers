@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 12:18:58 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 13:42:34 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 18:58:11 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	philo_sleep(t_df *df, t_phil *philo)
 	long	start_time;
 
 	start_time = get_sim_time(MICRO);
-	if (log_event_safe(philo, SLEEPING) < 0)
+	if (log_event_safe(philo, SLEEPING))
 		return (-1);
 	if (philo_should_exit(df, philo, BOTH))
 		return (SIM_COMPLETED);
@@ -86,7 +86,7 @@ int	philo_think(t_df *df, t_phil *philo)
 {
 	if (philo_should_exit(df, philo, BOTH))
 		return (SIM_COMPLETED);
-	if (log_event_safe(philo, THINKING) < 0)
+	if (log_event_safe(philo, THINKING))
 		return (SIM_COMPLETED);
 	if (df->total_philos % 2)
 	{

@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:46:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 15:15:58 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 18:54:31 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,11 @@ static void	*start_dining(void *arg)
 	philo = (t_phil *)arg;
 	philos_sync_or_spin(df);
 	set_int(&df->mtx, &df->threads_running_nbr, INCREASE);
+	set_long(&philo->mtx, &philo->lastmeal_time, get_sim_time(MICRO));
 	philos_stagger(philo);
 	while (!get_bool(&df->mtx, &df->sim_finished)
 		&& get_bool(&philo->mtx, &philo->full) == false)
 	{
-		set_long(&philo->mtx, &philo->lastmeal_time, get_sim_time(MICRO));
 		if (philo_should_exit(df, philo, BOTH))
 			break ;
 		if (philo_eat(df, philo) < 0)
