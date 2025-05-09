@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 11:58:17 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 19:17:30 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 23:04:00 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	log_event_safe(t_phil *philo, t_phstates state);
 
 int	log_event_safe(t_phil *philo, t_phstates state)
 {
-	// long	start_time;
 	t_df	*df;
 
 	df = get_df();
@@ -27,7 +26,6 @@ int	log_event_safe(t_phil *philo, t_phstates state)
 	if (philo_should_exit(df, philo, BOTH))
 		return (print_mutex_error(UNLOCK, pthread_mutex_unlock(&df->mtx_write)),
 			SIM_COMPLETED);
-	// start_time = get_sim_time(MILLI);
 	if (state == TOOK_FORK_1 || state == TOOK_FORK_2)
 		printf("%ld	%d has taken a fork\n", get_sim_time(MILLI), philo->id);
 	else if (state == EATING)

@@ -6,47 +6,18 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 00:56:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 18:23:55 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 23:07:00 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-int			parse_arguments(int ac, char **av, t_df *df);
+long		ft_atol_tailored(const char *str);
 
-static long	ft_atol_tailored(const char *str);
 static int	ft_isdigit(unsigned int c);
 static int	ft_is_wspace(unsigned int c);
 static int	check_invalid_beyond_digits(const char *str, int pos);
 static int	check_invalid_digit_length(const char *str, int pos);
-
-/*
-Function to import the arguments input by the user, parse them and assign them
-to the appropriate elements in the dataframe
-  - Input format:	./philo   5    800   200   200   [10]
-	 				  av[0] av[1] av[2] av[3] av[4] (av[5])
-  - av[0] = "./philo"
-  - av[1] = total number of philosophers for the simulation
-  - av[2] = time to die
-  - av[3] = time to eat
-  - av[4] = time to sleep
-  - av[5] = no. of times each philosopher must eat
-  - ac = 6 (including the optional parameter)
-*/
-int	parse_arguments(int ac, char **av, t_df *df)
-{
-	df->total_philos = ft_atol_tailored(av[1]);
-	df->ttd = ft_atol_tailored(av[2]) * 1000;
-	df->tte = ft_atol_tailored(av[3]) * 1000;
-	df->tts = ft_atol_tailored(av[4]) * 1000;
-	if (df->total_philos < 0 || df->ttd < 0 || df->tte < 0 || df->tts < 0)
-		return (-1);
-	if (ac == 6)
-		df->max_meals = ft_atol_tailored(av[5]);
-	if (ac == 6 && df->max_meals < 0)
-		return (-1);
-	return (0);
-}
 
 /*
 Function to convert alphanumeric to long while also checking if arguments are
@@ -57,7 +28,7 @@ valid.
   	- Invalid:	"    ++--  $f%33bc&"
   - Also checks for negative numbers, and numbers greater than INT_MAX
 */
-static long	ft_atol_tailored(const char *str)
+long	ft_atol_tailored(const char *str)
 {
 	long	num;
 	int		pos;
@@ -123,7 +94,7 @@ static int	check_invalid_beyond_digits(const char *str, int pos)
 static int	check_invalid_digit_length(const char *str, int pos)
 {
 	int	digit_len;
-	
+
 	digit_len = ft_strlen(str + pos);
 	if (digit_len > 10)
 		return (1);

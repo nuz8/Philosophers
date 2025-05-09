@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 22:58:24 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 23:06:38 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,6 +195,7 @@ void	spawn_fork(t_fork *fork);
 /* ------------------------------- init_df.c ------------------------------- */
 
 int		init_df(int ac, char **av);
+int		parse_arguments(int ac, char **av, t_df *df);
 int		init_philos(t_df *df);
 int		init_forks(t_df *df);
 
@@ -205,7 +206,7 @@ int		ft_fprintf_str(const int fd, const char *str[]);
 
 /* ----------------------------- parser.c ----------------------------- */
 
-int		parse_arguments(int ac, char **av, t_df *df);
+long	ft_atol_tailored(const char *str);
 
 /* ----------------------------- timers.c ----------------------------- */
 
