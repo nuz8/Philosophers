@@ -6,7 +6,7 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/05/09 02:01:52 by pamatya          ###   ########.fr        #
+#    Updated: 2025/05/09 12:57:33 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ D_OBJ		=	obj
 
 # ------------------- Source, object and dependency files ------------------- #
 SRC_MAIN	=	main.c errors.c init_df.c spawners.c string_utils.c parser.c \
-				utils.c timers.c simulation.c events.c loggers.c getter_fns.c \
+				cleaners.c timers.c simulation.c events.c loggers.c getter_fns.c \
 				setter_fns.c synchronizers.c manager.c forks.c
 
 VPATH		+=	$(D_SRC)

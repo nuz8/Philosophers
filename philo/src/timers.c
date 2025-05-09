@@ -6,16 +6,15 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:42:09 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/06 18:14:26 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 15:37:43 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-long	get_abs_time(int mode);
-long	get_sim_time(int mode);
+long	get_abs_time(t_units mode);
+long	get_sim_time(t_units mode);
 int		ft_usleep(long start_time, long tts_usec);
-// int		ft_usleep2(long start_time, long tts_usec, t_phil *philo);
 
 /*
 Function to get the time in sec, millisecond, or microsecond based on the value
@@ -27,19 +26,18 @@ of the parameter mode
 	
 Note*: absolute time means as returned by gettimeofday() fn (Jan 1970 onwards)
 */
-long	get_abs_time(int mode)
+long	get_abs_time(t_units mode)
 {
 	struct timeval	tv;
-	long	time;
-	long	sec;
-	long	usec;
+	long			time;
+	long			sec;
+	long			usec;
 
 	time = 0;
 	if (gettimeofday(&tv, NULL) < 0)
 		return (-1);
 	sec = tv.tv_sec;
 	usec = tv.tv_usec;
-
 	if (mode == SECOND)
 		time = sec + usec / (1000000);
 	else if (mode == MILLI)
@@ -56,7 +54,7 @@ Function to return the sim time relative to the start time of the simulation
 	- Mode 2: returns sim time in milliseconds
 	- Mode 3: returns sim time in microseconds
 */
-long	get_sim_time(int mode)
+long	get_sim_time(t_units mode)
 {
 	t_df	*df;
 	long	sim_time;
@@ -65,91 +63,15 @@ long	get_sim_time(int mode)
 	df = get_df();
 	sim_time = 0;
 	abs_start_time = 0;
-	if (mode == SECOND)			// sec
+	if (mode == SECOND)
 		abs_start_time = df->start_time / 1000000;
-	else if (mode == MILLI)		// ms
+	else if (mode == MILLI)
 		abs_start_time = df->start_time / 1000;
-	else if (mode == MICRO)		// us
+	else if (mode == MICRO)
 		abs_start_time = df->start_time;
 	sim_time = get_abs_time(mode) - abs_start_time;
 	return (sim_time);
 }
-
-// int	ft_usleep(long start_time, long tts_usec)
-// {
-// 	long	cur_time;
-// 	long	rem_tts_usec;
-
-// 	cur_time = get_sim_time(MICRO);
-// 	if (usleep(0.5 * tts_usec) < 0)
-// 		return (print_errstr("usleep failed\n"), -1);
-// 	rem_tts_usec = 0.5 * tts_usec;
-// 	while (rem_tts_usec > 1)
-// 	{
-// 		if (usleep(rem_tts_usec / 2) < 0)
-// 			return (print_errstr("usleep failed\n"), -1);
-// 		rem_tts_usec = rem_tts_usec / 2;
-// 	}
-// 	return (0);
-// }
-
-/*
-Custom usleep fn			// Need to remove the type variable later
-	- if type = 0, then uses built-in usleep
-	- if type = 1, then uses custom usleep
-*/
-// int	ft_usleep(long start_time, long tts_usec)
-// {
-// 	int	type;
-// 	type = 1;
-	
-// 	if (type == 0)
-// 		usleep(tts_usec);
-// 	else
-// 	{
-// 		t_df	*df;
-// 		long	start_time;
-	
-// 		df = get_df();
-// 		start_time = get_abs_time(MICRO);
-// 		usleep(0.5 * tts_usec);
-// 		while (get_abs_time(MICRO) < start_time + tts_usec)
-// 		{
-// 			if (get_bool(&df->mtx, &df->sim_finished))
-// 				break ;
-// 			usleep (40);	
-// 		}	
-// 	}
-// 	return (0);
-// }
-
-// int	ft_usleep(long start_time, long tts_usec)
-// {
-// 	// long	time_passed;
-// 	long	rem_tts;
-// 	t_df	*df;
-
-// 	df = get_df();
-// 	while (get_abs_time(MICRO) < start_time + tts_usec)
-// 	{
-// 		// if (get_bool(&df->mtx, &df->sim_finished))
-// 		// 	break ;
-// 		if (philo_should_exit(df, NULL, SIMULATION))
-// 			return (SIM_COMPLETED);
-// 		// time_passed = get_abs_time(MICRO) - start_time;
-// 		// rem_tts = tts_usec - time_passed;
-// 		rem_tts = tts_usec + start_time - get_abs_time(MICRO);
-
-// 		if (rem_tts > 100)
-// 			usleep(100);
-// 		else
-// 		{
-// 			while (get_abs_time(MICRO) < start_time + tts_usec)
-// 				continue ;
-// 		}
-// 	}
-// 	return (0);
-// }
 
 /*
 ft_usleep fn above but with get_sim_time instead of get_abs_time
@@ -157,21 +79,15 @@ ft_usleep fn above but with get_sim_time instead of get_abs_time
 */
 int	ft_usleep(long start_time, long tts_usec)
 {
-	// long	time_passed;
 	long	rem_tts;
 	t_df	*df;
 
 	df = get_df();
 	while (get_sim_time(MICRO) < start_time + tts_usec)
 	{
-		// if (get_bool(&df->mtx, &df->sim_finished))
-		// 	break ;
 		if (philo_should_exit(df, NULL, SIMULATION))
 			return (SIM_COMPLETED);
-		// time_passed = get_sim_time(MICRO) - start_time;
-		// rem_tts = tts_usec - time_passed;
 		rem_tts = tts_usec + start_time - get_sim_time(MICRO);
-
 		if (rem_tts > 100)
 			usleep(100);
 		else
@@ -182,31 +98,3 @@ int	ft_usleep(long start_time, long tts_usec)
 	}
 	return (0);
 }
-
-
-// int	ft_usleep2(long start_time, long tts_usec, t_phil *philo)
-// {
-// 	long	time_passed;
-// 	long	rem_tts;
-// 	t_df	*df;
-
-// 	df = get_df();
-// 	printf("\t\t\t\tPhilo "Y"%d"RST" is here\n", philo->id);
-// 	while (get_sim_time(MICRO) < start_time + tts_usec)
-// 	{
-// 		// printf("\t\t\t\tPhilo "Y"%d"RST" is here\n", philo->id);
-// 		if (get_bool(&df->mtx, &df->sim_finished) == true)
-// 			break ;
-// 		time_passed = get_sim_time(MICRO) - start_time;
-// 		rem_tts = tts_usec - time_passed;
-
-// 		if (rem_tts > 100)
-// 			usleep(100);
-// 		else
-// 		{
-// 			while (start_time + tts_usec > get_sim_time(MICRO))
-// 				continue ;
-// 		}
-// 	}
-// 	return (0);
-// }

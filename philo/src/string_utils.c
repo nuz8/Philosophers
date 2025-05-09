@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:45 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/15 15:59:45 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 13:24:22 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 size_t	ft_strlen(const char *str);
 int		ft_fprintf_str(const int fd, const char *str[]);
-char	*concat_strings(const char *str[]);
 
 size_t	ft_strlen(const char *str)
 {
@@ -54,38 +53,4 @@ int	ft_fprintf_str(const int fd, const char *str[])
 		index++;
 	}
 	return (total);
-}
-
-/*
-Function to malloc a total string by combining all the strings provided
-  - Returns a bigger malloc'd string
-  - Final string should be provided as NULL
-*/
-char	*concat_strings(const char *str[])
-{
-	size_t	indices[3];
-	size_t	tlen;
-	char	*concat;
-
-	indices[0] = -1;
-	tlen = 0;
-	while (str[++indices[0]])
-	{
-		indices[1] = -1;
-		while (str[indices[0]][++(indices[1])])
-			tlen++;
-	}
-	concat = malloc((tlen + 1) * sizeof(char));
-	if (!concat)
-		return (NULL);
-	indices[0] = -1;
-	indices[2] = 0;
-	while (str[++indices[0]])
-	{
-		indices[1] = 0;
-		while (str[indices[0]][indices[1]])
-			concat[(indices[2])++] = str[indices[0]][(indices[1])++];
-	}
-	concat[indices[2]] = '\0';
-	return (concat);
 }

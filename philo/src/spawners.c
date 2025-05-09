@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 01:09:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/08 00:58:27 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 15:42:40 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	spawn_philo(t_phil *philo)
 {
 	*philo = (t_phil){
 		.mtx_init = false,
-		.state = -1,
 		.fork1 = NULL,
 		.fork2 = NULL,
 		.full = false,

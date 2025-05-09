@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   cleaners.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 11:46:44 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/08 00:43:26 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 13:34:43 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-void	clear_out(t_df *df);
+void		clear_out(t_df *df);
+
 static void	clear_philos(t_df *df);
 static void	clear_forks(t_df *df);
 
@@ -50,12 +51,13 @@ static void	clear_forks(t_df *df)
 	if (df->forks)
 	{
 		while (++i < df->total_philos)
+		{
 			if ((df->forks + i)->mtx_init == true)
 			{
-				if (print_mutex_error(DESTROY,
-						pthread_mutex_destroy(&(df->forks + i)->mtx)))
-					printf("Fork mutex:	%d\n", (df->forks + i)->id);
-			}	
+				print_mutex_error(DESTROY,
+					pthread_mutex_destroy(&(df->forks + i)->mtx));
+			}
+		}
 		free(df->forks);
 		df->forks = NULL;
 	}
@@ -78,12 +80,13 @@ static void	clear_philos(t_df *df)
 	if (df->philos)
 	{
 		while (++i < df->total_philos)
+		{
 			if ((df->philos + i)->mtx_init == true)
 			{
-				if (print_mutex_error(DESTROY,
-						pthread_mutex_destroy(&(df->philos + i)->mtx)))
-					printf("Philo mutex:	%d\n", (df->forks + i)->id);
+				print_mutex_error(DESTROY,
+					pthread_mutex_destroy(&(df->philos + i)->mtx));
 			}
+		}
 		free(df->philos);
 		df->philos = NULL;
 	}

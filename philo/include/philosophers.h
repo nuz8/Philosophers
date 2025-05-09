@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 01:56:40 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 15:47:56 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <stdio.h>		// printf
 # include <stdlib.h>	// malloc, free
 # include <unistd.h>	// write, usleep
-# include <pthread.h>	// threads (create, join, detach) and mutex (init, destroy, lock, unlock)
+# include <pthread.h>	// threads and mutex
 # include <sys/time.h>	// gettimeofday
 # include <stdbool.h>	// boolean datatype
 # include <limits.h>	// INT_MAX
@@ -37,25 +37,11 @@ RST is to reset the colour after changing it...should be used everytime
 # define RST	"\033[0m"		// Reset to default
 
 /* ----------------------------- Error Messages ----------------------------- */
-
-//Error messages for mac
-// # define ERR_MALLOC		R"Error: "Y"malloc failed\n"RST
-// # define ERR_INVALID	R"Error: "Y"invalid characters\n"RST
-// # define ERR_NEGATIVE	R"Error: "Y"input is negative\n"RST
-// # define ERR_TOOLONG	R"Error: "Y"input too large, limit is 2147483647\n"RST
-// # define ERR_TOOSMALL	R"Error: "Y"time too small, should be >= 60\n"RST
-
-// # define ERR_STH		R"Error: "Y"SOME ERROR THAT NEEDS ADDRESSING\n"RST
-
-
-// Error messages for linux
 # define ERR_MALLOC		"Error: malloc failed\n"
-# define ERR_INVALID	"Error: invalid characters\n"
-# define ERR_NEGATIVE	"Error: input is negative\n"
-# define ERR_TOOLONG	"Error: input too large, limit is 2147483647\n"
-# define ERR_TOOSMALL	"Error: time too small, should be >= 60\n"
-
-# define ERR_STH		"Error: SOME ERROR THAT NEEDS ADDRESSING\n"
+# define ERR_INVALID	"Invalid input: invalid characters\n"
+# define ERR_NEGATIVE	"Invalid input: argument is negative\n"
+# define ERR_TOOLONG	"Invalid input: too large, limit is 2147483647\n"
+# define ERR_TOOSMALL	"Invalid input: time too small, should be >= 60\n"
 
 // Standard error messages for mutex errors
 # define ERR_INIT_EINVAL "The value specified by attr is invalid.\n"
@@ -66,6 +52,23 @@ RST is to reset the colour after changing it...should be used everytime
 	"A deadlock would occur if the thread blocked waiting for mutex.\n"
 # define ERR_UNLOCK_EPERM "The current thread does not hold a lock on mutex.\n"
 # define ERR_DEST_EBUSY "Mutex is locked.\n"
+
+// Standard error messages for pthread errors
+// pthread_create errors
+# define ERR_CREATE_EAGAIN "The system lacked the necessary resources to \
+	create another thread, or the system-imposed limit on the total number of  \
+	threads in a process [PTHREAD_THREADS_MAX] would be exceeded.\n"
+# define ERR_CREATE_EPERM "The caller does not have appropriate permission to \
+	set the required scheduling parameters or scheduling policy.\n"
+# define ERR_CREATE_EINVAL "The value specified by attr is invalid.\n"
+
+// pthread_join errors
+# define ERR_JOIN_EINVAL "The implementation has detected that the value \
+	specified by thread does not refer to a joinable thread.\n"
+# define ERR_JOIN_ESRCH "No thread could be found corresponding to that \
+	specified by the given thread ID, thread.\n"
+# define ERR_JOIN_EDEADLK "A deadlock was detected or the value of thread \
+	specifies the calling thread.\n"
 
 /* ----------------------------- Error Messages ----------------------------- */
 
@@ -79,14 +82,14 @@ typedef pthread_mutex_t	t_mutex;
 
 /* ------------------- enums ------------------- */
 // ENUMs for fork states
-typedef enum	e_fstates
+typedef enum e_fstates
 {
 	TAKEN,
 	FREE
-}				e_fstates;
+}	t_fstates;
 
 // ENUMs for states of the philosophers
-typedef enum	e_phstates
+typedef enum e_phstates
 {
 	TOOK_FORK_1,
 	TOOK_FORK_2,
@@ -94,103 +97,94 @@ typedef enum	e_phstates
 	SLEEPING,
 	THINKING,
 	DIED
-}				e_phstates;
+}	t_phstates;
 
-typedef enum	e_units
+typedef enum e_units
 {
 	SECOND,
 	MILLI,
 	MICRO
-}				e_units;
-
-typedef enum	e_turn
-{
-	EVEN_PHILOS,
-	ODD_PHILOS
-}				e_turn;
+}	t_units;
 
 // Enum type for mutex operations
-typedef enum	e_mtx_op
+typedef enum e_mtx_op
 {
+	CREATE,
+	JOIN,
 	INIT,
 	LOCK,
 	UNLOCK,
 	DESTROY
-}				e_mtx_op;
+}	t_mtx_op;
 
-typedef	enum	e_check
+typedef enum e_check
 {
 	PHILO,
 	SIMULATION,
 	BOTH,
 	ONE,
 	TWO
-}				e_check;
+}	t_check;
 
 /* ==================== enums ==================== */
 
-/* ------------------------- structs ------------------------- */
-typedef struct	s_fork
+/* -------------------------------- structs --------------------------------- */
+typedef struct s_fork
 {
-	int		id;			// starts at 0
-	t_mutex	mtx;		// pointer to the fork mutex
-	bool	mtx_init;	// flag for initialization status of the mutex mtx
-	int		state;		// states: TAKEN / FREE ; from e_fstates enums
-	int		taker_id;	// philo_id when state is TAKEN, else flag: init to 0
-}				t_fork;
+	int		id;
+	t_mutex	mtx;
+	bool	mtx_init;
+	int		state;
+	int		taker_id;
+}	t_fork;
 
-typedef struct	s_phil
+typedef struct s_phil
 {
-	int			id;				// philosopher id number
-	pthread_t	th_id;			// thread id number
-	t_mutex		mtx;			// philo mutex
-	bool		mtx_init;		// flag for initialization status of the mutex mtx
-	int			state;	// remove	// philo states from e_phstates enums, else flag -1
-	t_fork		*fork1;			// pointer to the first fork
-	t_fork		*fork2;			// pointer to the second fork
-	long		meals_left;		// keep count of the number of times the philo has eaten
-	long		lastmeal_time;	// time stamp when the philosopher last ate
-	bool		full
-	;		// 1 if it is the last phil in the round-table
+	int			id;
+	pthread_t	th_id;
+	t_mutex		mtx;
+	bool		mtx_init;
+	t_fork		*fork1;
+	t_fork		*fork2;
+	long		meals_left;
+	long		lastmeal_time;
+	bool		full;
 	bool		dead;
 }				t_phil;
 
-typedef struct	s_df
+typedef struct s_df
 {
-	long		total_philos;	// total number of philos from user
-	long		ttd;			// time to die from user, stored in microseconds
-	long		tte;			// time to eat from user, stored in microseconds
-	long		tts;			// time to sleep from user, stored in microseconds
-	long		ttt;			// time to think, modifiable value suiting the algo
-	long		max_meals;		// no. of times each philo should eat before end of simulation, optional arg provided by user
-	
-	t_fork		*forks;			// pointer to the array of forks
-	t_phil		*philos;		// pointer to the array of philosophers
-	
-	t_mutex		mtx;			// dataframe mutex
-	bool		mtx_init;		// flag for initialization status of the mutex mtx
-	t_mutex		mtx_write;		// mutex for only writing logs
-	bool		mtx_write_init;	// boolean flag to indicate mtx_write was initialized
-	
-	pthread_t	manager;		// manager is the supervising thread to check if simulation has ended by either completion of meals or a philo dying
+	long		total_philos;
+	long		ttd;
+	long		tte;
+	long		tts;
+	long		ttt;
+	long		max_meals;
+
+	t_fork		*forks;
+	t_phil		*philos;
+
+	t_mutex		mtx;
+	bool		mtx_init;
+	t_mutex		mtx_write;
+	bool		mtx_write_init;
+
+	pthread_t	manager;
 	bool		all_threads_ready;
 	int			threads_running_nbr;
-	long		start_time;		// time of start of the simulation in microseconds
-	bool		sim_finished;	// a boolean to indicate whether any criteria for ending the simulation has been met
+	long		start_time;
+	bool		sim_finished;
 }				t_df;
 
 /* ================================ structs ================================ */
-
 
 /* -------------------------- function prototypes -------------------------- */
 /* -------------------------------- errors.c -------------------------------- */
 
 int		arg_error(void);
 void	print_errstr(char *str);
-int		print_mutex_error(e_mtx_op operation, int err_code);
-
-int	print_mutex_error_debug(t_phil *philo, t_fork *fork, e_mtx_op operation, int err_code);
-
+int		print_mutex_error(t_mtx_op operation, int err_code);
+int		print_thread_error(t_mtx_op operation, int err_code);
 
 /* ------------------------------- spawners.c ------------------------------- */
 
@@ -208,7 +202,6 @@ int		init_forks(t_df *df);
 
 size_t	ft_strlen(const char *str);
 int		ft_fprintf_str(const int fd, const char *str[]);
-char	*concat_strings(const char *str[]);
 
 /* ----------------------------- parser.c ----------------------------- */
 
@@ -216,11 +209,9 @@ int		parse_arguments(int ac, char **av, t_df *df);
 
 /* ----------------------------- timers.c ----------------------------- */
 
-long	get_abs_time(int mode);
-long	get_sim_time(int mode);
+long	get_abs_time(t_units mode);
+long	get_sim_time(t_units mode);
 int		ft_usleep(long start_time, long tts_usec);
-
-int	ft_usleep2(long start_time, long tts_usec, t_phil *philo);
 
 /* ----------------------------- simulation.c ----------------------------- */
 
@@ -229,24 +220,22 @@ int		start_simulation(t_df *df);
 /* ----------------------------- manager.c ----------------------------- */
 
 void	*supervise(void *arg);
-bool	philo_should_exit(t_df *df, t_phil *philo, e_check check);
+bool	philo_should_exit(t_df *df, t_phil *philo, t_check check);
 
 /* ----------------------------- events.c ----------------------------- */
 
 int		philo_eat(t_df *df, t_phil *philo);
 int		philo_sleep(t_df *df, t_phil *philo);
-int		philo_think(t_df *df, t_phil *philo, bool first_think);
+int		philo_think(t_df *df, t_phil *philo);
 
 /* ----------------------------- forks.c ----------------------------- */
 
-int	philo_pickup_forks(t_df *df, t_phil *philo);
-int	philo_drop_forks(t_phil *philo, e_check drop);
+int		philo_pickup_forks(t_df *df, t_phil *philo);
+int		philo_drop_forks(t_phil *philo, t_check drop);
 
 /* ----------------------------- loggers.c ----------------------------- */
 
-int		log_event_safe(t_phil *philo, e_phstates state);
-
-int	log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
+int		log_event_safe(t_phil *philo, t_phstates state);
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 
@@ -275,7 +264,7 @@ void	test_print_time(void);
 void	test_print_fork_tags(void);
 void	test_print_logs(void);
 void	test_print_mutex_errors(void);
-void	test_print_fork_owners();
+void	test_print_fork_owners(void);
 void	test_print_philo_presence(t_phil *philo);
 void	test_print_safe_mutex_destruction(t_mutex *mtx);
 

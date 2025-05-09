@@ -6,18 +6,18 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 00:56:59 by pamatya           #+#    #+#             */
-/*   Updated: 2025/04/24 12:55:03 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 15:13:41 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/philosophers.h"
 
-int	parse_arguments(int ac, char **av, t_df *df);
+int			parse_arguments(int ac, char **av, t_df *df);
 
 static long	ft_atol_tailored(const char *str);
 static int	ft_isdigit(unsigned int c);
 static int	ft_is_wspace(unsigned int c);
-// static int	check_arg_offset(const char *str);
+static int	check_invalid_beyond_digits(const char *str, int pos);
 
 /*
 Function to import the arguments input by the user, parse them and assign them
@@ -42,10 +42,8 @@ int	parse_arguments(int ac, char **av, t_df *df)
 		return (-1);
 	if (ac == 6)
 		df->max_meals = ft_atol_tailored(av[5]);
-	if (ac == 6 && df->max_meals < 0)	// To distinguish from spawn-initialized value, and still keep the code robust when user input is negative (incl. -1) or zero
+	if (ac == 6 && df->max_meals < 0)
 		return (-1);
-	if (df->ttd < 60 || df->tte < 60 || df->tts < 60)
-		return (print_errstr(ERR_TOOSMALL), -1);
 	return (0);
 }
 
@@ -53,8 +51,9 @@ int	parse_arguments(int ac, char **av, t_df *df)
 Function to convert alphanumeric to long while also checking if arguments are
 valid.
   - Following are the valid and invalid input types.
-  	- Valid:		"      +444%*  a"	✅
-  	- Invalid:	"    ++--  $f%33bc&"	❌
+  	- Valid:		"      +444"
+  	- Valid:		"      +444abc"
+  	- Invalid:	"    ++--  $f%33bc&"
   - Also checks for negative numbers, and numbers greater than INT_MAX
 */
 static long	ft_atol_tailored(const char *str)
@@ -72,13 +71,16 @@ static long	ft_atol_tailored(const char *str)
 		return (print_errstr(ERR_INVALID), -1);
 	if (pos > 0 && str[pos - 1] == '-')
 		return (print_errstr(ERR_NEGATIVE), -1);
+	if (check_invalid_beyond_digits(str, pos))
+		return (print_errstr(ERR_INVALID), -1);
 	while (str[pos] && ft_isdigit(str[pos]))
 		num = num * 10 + (str[pos++] - '0');
 	if (num > INT_MAX)
-		return (print_errstr(ERR_TOOLONG) , -1);
+		return (print_errstr(ERR_TOOLONG), -1);
 	return (num);
 }
 
+// Function that returns 1 if character is a digit, else returns 0
 static int	ft_isdigit(unsigned int c)
 {
 	if (c >= '0' && c <= '9')
@@ -86,10 +88,31 @@ static int	ft_isdigit(unsigned int c)
 	return (0);
 }
 
+// Function to return 1 if character is a whitespace, otherwise returns 0
 static int	ft_is_wspace(unsigned int c)
 {
 	if (c == ' ' || c == '\n' || c == '\t'
 		|| c == '\v' || c == '\f' || c == '\r')
 		return (1);
+	return (0);
+}
+
+/*
+Function to check if all characters from the position 'pos' in the string 'str'
+are digits
+	- Returns 1 if an invalid character (i.e. non-digit) is found
+	- Returns 0 if the check is over and no invalid characters were found
+*/
+static int	check_invalid_beyond_digits(const char *str, int pos)
+{
+	int	i;
+
+	i = pos;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (1);
+		i++;
+	}
 	return (0);
 }
