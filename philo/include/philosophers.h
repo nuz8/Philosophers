@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/09 15:47:56 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 22:58:24 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ typedef struct s_df
 
 /* ================================ structs ================================ */
 
-/* -------------------------- function prototypes -------------------------- */
+/* ========================== function prototypes ========================== */
 /* -------------------------------- errors.c -------------------------------- */
 
 int		arg_error(void);
@@ -256,18 +256,5 @@ bool	all_threads_running(t_mutex *mtx, int *threads, int total_philos);
 /* ----------------------------- utils.c ----------------------------- */
 
 void	clear_out(t_df *df);
-
-/* ============================= test functions ============================= */
-
-void	test_print_elements(void);
-void	test_print_time(void);
-void	test_print_fork_tags(void);
-void	test_print_logs(void);
-void	test_print_mutex_errors(void);
-void	test_print_fork_owners(void);
-void	test_print_philo_presence(t_phil *philo);
-void	test_print_safe_mutex_destruction(t_mutex *mtx);
-
-void	keep_time(void);
 
 #endif

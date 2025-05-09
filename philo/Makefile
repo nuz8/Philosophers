@@ -6,132 +6,65 @@
 #    By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: Invalid date        by                   #+#    #+#              #
-#    Updated: 2025/05/09 18:40:25 by pamatya          ###   ########.fr        #
+#    Updated: 2025/05/09 12:57:33 by pamatya          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-
-# ----------------- Compiler Flags ----------------- #
-
+# ------------------------------ Compiler Flags ------------------------------ #
 CC			= 	gcc -g
-# CC			= 	gcc -g -fsanitize=address
 CFLAGS		= 	-Wall -Wextra -Werror -pthread
-DEPFLAGS	= 	-MMD
 
-# ----------------- Commands ----------------- #
-
+# --------------------------------- Commands --------------------------------- #
 RM			= 	rm -rf
 
-# ----------------- Default Directories ----------------- #
-
-# D_BIN		=	bin
+# --------------------------- Default Directories --------------------------- #
 D_INC		=	include
-D_LIB		=	lib
+D_SRC		=	src
 D_OBJ		=	obj
 
-D_SRC		=	src
-D_TEST		=	test_src
-
-# ----------------- Docker files ----------------- #
-
-DK_FILE		=	Dockerfile
-DK_COMP		=	docker-compose.yml
-
-# Define the script name
-DOCK_BUILD_SCRIPT = dock_build.sh
-
-# Define the Docker image name
-IMAGE_NAME = valgrind
-
-# ----------------- Source, Object and Dependency files ----------------- #
-
+# ------------------- Source, object and dependency files ------------------- #
 SRC_MAIN	=	main.c errors.c init_df.c spawners.c string_utils.c parser.c \
 				cleaners.c timers.c simulation.c events.c loggers.c getter_fns.c \
 				setter_fns.c synchronizers.c manager.c forks.c
-SRC_TEST	=	test_prints.c
 
-VPATH		+=	$(D_SRC) $(D_TEST)
+VPATH		+=	$(D_SRC)
 
-SRC			=	$(SRC_MAIN) $(SRC_TEST)
+SRC			=	$(SRC_MAIN)
 OBJ 		+= 	$(addprefix $(D_OBJ)/, $(SRC:.c=.o))
 DEP			= 	$(OBJ:.o=.d)
 
-# ----------------- Target Binary ----------------- #
+# ------------------------------ Target Binary ------------------------------ #
 NAME		=	philo
-ARGS		=	5 810 200 200 5
 
-# ----------------- Headers Flag ----------------- #
+# ------------------------------- Headers Flag ------------------------------- #
 HEADS_FLG	=	-I$(D_INC)
 
-# ----------------- Valgrind ----------------- #
-VALGRIND_OPTS	= 	--leak-check=full \
-					--show-leak-kinds=all \
-					--trace-children=yes \
-					--track-fds=yes \
-					-s
-# --child-silent-after-fork=yes
-
-# ----------------- Helgrind ----------------- #
-HELGRIND_OPTS =		--tool=helgrind \
-					--track-lockorders=yes \
-					--history-level=full \
-					-s
-
-# Leak Sanitizer for leak check on Mac (run: make LEAK=1)
-LEAKSAN			=	liblsan.dylib
-LEAKSAN_DIR		=	/Users/dstinghe/LeakSanitizer
-LEAKSAN_HED		= 	/Users/dstinghe/LeakSanitizer/include
-LEAKSAN_FLG		=	-L$(LEAKSAN_DIR) -l$(basename $(subst lib,,$(LEAKSAN)))
-		
-ifeq ($(LEAK), 1)
-	LIBS_FLG	+=	$(LEAKSAN_FLG)
-endif
-
-# ----------------- Color Codes ----------------- #
-
+# ------------------------------- Color Codes ------------------------------- #
 RESET 		= 	\033[0m
 RED 		= 	\033[31m
 GREEN 		= 	\033[32m
 YELLOW 		= 	\033[33m
 BLUE 		= 	\033[34m
 
-# ----------------- Rules ----------------- #
-
+# ---------------------------------- Rules ---------------------------------- #
 all: $(NAME)
 	@echo "$(GREEN)Compilation finished$(RESET)"
 
 $(NAME): $(OBJ)
 	@echo "Compiling..."
-	@$(CC) $(CFLAGS) $(HEADS_FLG) $^ $(LIBS_FLG) -o $@ 
+	@$(CC) $(CFLAGS) $(HEADS_FLG) $^ -o $@ 
 
 $(D_OBJ)/%.o: %.c
-	@$(CC) $(CFLAGS) $(HEADS_FLG) $(DEPFLAGS) -c $< -o $@
-
--include $(DEP)
+	@$(CC) $(CFLAGS) $(HEADS_FLG) -c $< -o $@
 
 clean:
-	@$(RM) $(OBJ) $(DEP)
+	@$(RM) $(OBJ)
 	@echo "$(YELLOW)Cleaned Objects & Dependencies$(RESET)"
 
 fclean:
-	@$(RM) $(OBJ) $(DEP) $(NAME)
+	@$(RM) $(OBJ) $(NAME)
 	@echo "$(YELLOW)Cleaned All$(RESET)"
 
 re: fclean all
 
-valgrind: $(NAME)
-	@valgrind $(VALGRIND_OPTS) ./$(NAME) $(ARGS)
-
-helgrind: $(NAME)
-	@valgrind $(HELGRIND_OPTS) ./$(NAME) $(ARGS)
-# @valgrind $(HELGRIND_OPTS) ./$(NAME)
-
-format:
-	@c_formatter_42 main.c $(D_PTHREADS)/*.c $(D_SRC)/*.c $(D_INC)/*.h
-
-dock:
-	@docker build -t $(IMAGE_NAME) .
-	@docker-compose run --rm $(IMAGE_NAME)
-
-.PHONY: all clean fclean re valgrind valgrind_n norm format dock
-
+.PHONY: all clean fclean re
