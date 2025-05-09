@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 19:54:13 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/08 17:37:37 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 02:01:27 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,7 @@ int	init_philos(t_df *df)
 
 /*
 Function to tag the forks for the provided philo that it should be able to lock
-when it is time to pick up the forks (for optimization of performance by
-avoiding to loop in two places, and rather execute it in the same loop in the
-init_philo() fn)
+when it is time to pick up the forks
 */
 static void	tag_forks(t_phil *philo)
 {

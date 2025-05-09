@@ -6,7 +6,7 @@
 /*   By: pamatya <pamatya@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:10:30 by pamatya           #+#    #+#             */
-/*   Updated: 2025/05/08 00:42:50 by pamatya          ###   ########.fr       */
+/*   Updated: 2025/05/09 01:56:40 by pamatya          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,8 +250,7 @@ int	log_event_unsafe(t_phil *philo, e_phstates state);	// to be removed
 
 /* ----------------------------- getter_fns.c ----------------------------- */
 
-// int		get_bool(t_mutex *mtx, bool *source, bool *fetch);
-bool	get_bool(t_mutex *mtx, bool *source);	// destination and put for the setter function
+bool	get_bool(t_mutex *mtx, bool *source);
 int		get_int(t_mutex *mtx, int *source);
 long	get_long(t_mutex *mtx, long *source);
 
@@ -261,8 +260,7 @@ int		set_bool(t_mutex *mtx, bool *destination, bool put);
 int		set_int(t_mutex *mtx, int *destination, int put);
 int		set_long(t_mutex *mtx, long *destination, long put);
 
-
-/* ----------------------------- synchronizers.c ----------------------------- */
+/* ---------------------------- synchronizers.c ---------------------------- */
 
 bool	all_threads_running(t_mutex *mtx, int *threads, int total_philos);
 
@@ -281,7 +279,6 @@ void	test_print_fork_owners();
 void	test_print_philo_presence(t_phil *philo);
 void	test_print_safe_mutex_destruction(t_mutex *mtx);
 
-int		test_get_int(t_mutex *mtx, int *source, t_phil *philo);
 void	keep_time(void);
 
 #endif

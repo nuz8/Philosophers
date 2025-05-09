@@ -1,6 +1,0 @@
-.DS_Store
-lib/
-obj/
-philo
-.gitignore
-.vscode/
